@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>وصل تسليم منتجات - نيوآل</title>
+    <!-- استدعاء خط القاهرة من جوجل -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --bg-color: #f5f6fa;
+            --text-color: #333;
+            --border-color: #bdc3c7;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* حاوية الأزرار علوية */
+        .actions-container {
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .btn-action {
+            display: inline-block;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn-print {
+            background-color: var(--accent-color);
+        }
+
+        .btn-print:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-add {
+            background-color: var(--success-color);
+        }
+
+        .btn-add:hover {
+            background-color: #219653;
+            transform: translateY(-2px);
+        }
+
+        .receipt-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 40px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-top: 8px solid var(--primary-color);
+            border-radius: 8px;
+            position: relative;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .company-info h1 {
+            margin: 0;
+            color: var(--primary-color);
+            font-size: 28px;
+        }
+
+        .company-info p {
+            margin: 5px 0 0 0;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .receipt-title {
+            text-align: left;
+        }
+
+        .receipt-title h2 {
+            margin: 0;
+            font-size: 32px;
+            color: var(--secondary-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 4px;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--secondary-color);
+            white-space: nowrap;
+            margin-left: 10px;
+        }
+
+        /* Inputs Styling */
+        input[type="text"] {
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-color);
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 4px 8px;
+            width: 100%;
+            background-color: #fff;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
+
+        /* Readonly inputs */
+        input[readonly] {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+            color: var(--secondary-color);
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            padding: 12px;
+            -webkit-print-color-adjust: exact;
+        }
+
+        td {
+            padding: 0;
+        }
+
+        .table-input {
+            width: 100%;
+            border: none !important;
+            padding: 12px;
+            box-sizing: border-box;
+            text-align: center;
+            background: transparent;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* زر حذف الصف */
+        .btn-delete-row {
+            background: none;
+            border: none;
+            color: #e74c3c;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto;
+        }
+        
+        .btn-delete-row:hover {
+            color: #c0392b;
+        }
+
+        /* Terms & Conditions */
+        .terms {
+            background: #fcfcfc;
+            border-right: 4px solid var(--accent-color);
+            padding: 15px 20px;
+            margin-bottom: 40px;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-top: 20px;
+        }
+
+        .terms h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .terms ul {
+            margin: 0;
+            padding-right: 20px;
+        }
+
+        /* Signatures */
+        .signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            margin-bottom: 30px;
+        }
+
+        .signature-box {
+            text-align: center;
+            width: 250px;
+        }
+
+        .signature-line {
+            border-top: 1px solid var(--text-color);
+            margin-top: 60px;
+            padding-top: 10px;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+            font-size: 13px;
+            color: #7f8c8d;
+        }
+
+
+        /* Smart Text Entry */
+        .smart-entry-panel {
+            max-width: 800px;
+            margin: 0 auto 20px auto;
+            background: #ffffff;
+            border: 1px solid #dfe6e9;
+            border-top: 5px solid var(--accent-color);
+            border-radius: 8px;
+            padding: 20px;
+            box-sizing: border-box;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.07);
+        }
+
+        .smart-entry-panel h3 {
+            margin: 0 0 8px 0;
+            color: var(--primary-color);
+            font-size: 20px;
+        }
+
+        .smart-entry-panel p {
+            margin: 0 0 12px 0;
+            color: #636e72;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        #smartTextInput {
+            width: 100%;
+            min-height: 155px;
+            resize: vertical;
+            box-sizing: border-box;
+            border: 1px solid #bfc7ce;
+            border-radius: 6px;
+            padding: 12px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            line-height: 1.8;
+            direction: rtl;
+            background: #fbfcfd;
+        }
+
+        #smartTextInput:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.25);
+        }
+
+        .smart-entry-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .btn-smart {
+            background-color: #8e44ad;
+        }
+
+        .btn-smart:hover {
+            background-color: #7d3c98;
+            transform: translateY(-2px);
+        }
+
+        .btn-clear-smart {
+            background-color: #7f8c8d;
+        }
+
+        .btn-clear-smart:hover {
+            background-color: #6c7a7a;
+            transform: translateY(-2px);
+        }
+
+        #smartStatus {
+            font-size: 13px;
+            font-weight: 600;
+            min-height: 22px;
+        }
+
+        .smart-ok { color: #1e8449; }
+        .smart-warn { color: #b9770e; }
+        .smart-error { color: #c0392b; }
+
+        /* Print Media Query */
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+            }
+            .receipt-container {
+                box-shadow: none;
+                border: none;
+                max-width: 100%;
+                padding: 0;
+            }
+            .actions-container, .smart-entry-panel, .btn-delete-row, th:last-child, td:last-child {
+                display: none !important; /* إخفاء الأزرار وعمود الحذف عند الطباعة */
+            }
+            input[type="text"] {
+                border: none !important;
+                background: transparent !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+            }
+            .info-row {
+                border-bottom: 1px solid #eee;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- قسم التحكم والأزرار التفاعلية -->
+    <div class="actions-container">
+        <button class="btn-action btn-print" onclick="window.print()">🖨️ طباعة الوصل النهائي</button>
+        <button class="btn-action btn-add" onclick="addNewRow()">➕ إضافة مادة (سطر جديد)</button>
+    </div>
+
+    <div class="smart-entry-panel">
+        <h3>✨ الإدخال الذكي من نص واحد</h3>
+        <p>
+            اكتب أو الصق البيانات بأي ترتيب مع عناوين واضحة مثل:
+            اسم العميل، رقم الهاتف، العنوان، كود المنتج، العدد، الحالة، الملاحظات.
+            ويمكن إدخال أكثر من منتج بتكرار بيانات المنتج في أسطر جديدة.
+        </p>
+        <textarea id="smartTextInput" placeholder="مثال:
+اسم العميل: أحمد علي
+رقم الهاتف: 07701234567
+العنوان: البصرة - الجزائر
+كود المنتج: NW-100
+العدد: 2
+الحالة: جاهز للتسليم
+ملاحظات المنتج / التوصيل: الاتصال قبل الوصول"></textarea>
+
+        <div class="smart-entry-actions">
+            <button class="btn-action btn-smart" type="button" onclick="fillFromSmartText()">✨ تعبئة البيانات تلقائياً</button>
+            <button class="btn-action btn-clear-smart" type="button" onclick="clearSmartText()">مسح النص</button>
+            <span id="smartStatus" aria-live="polite"></span>
+        </div>
+    </div>
+
+    <div class="receipt-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="company-info">
+                <h1>مركز صيانة نيوآل</h1>
+                <p>Newal Service Center</p>
+            </div>
+            <div class="receipt-title">
+                <h2>Service</h2>
+                <p style="margin:0; font-weight:bold; color:#7f8c8d;">وصل تسليم (توصيل)</p>
+            </div>
+        </div>
+
+        <!-- Info Grid -->
+        <div class="info-grid">
+            <!-- بيانات العميل والتوصيل -->
+            <div class="info-box">
+                <div class="info-row">
+                    <span class="info-label">اسم الوكيل أو الزبون:</span>
+                    <input type="text" id="customerNameInput" placeholder="اكتب اسم الزبون هنا...">
+                </div>
+                <div class="info-row">
+                    <span class="info-label">رقم الهاتف:</span>
+                    <input type="text" id="phoneInput" placeholder="مثال: 07734655699" onkeyup="generateRef()">
+                </div>
+                <div class="info-row">
+                    <span class="info-label">العنوان:</span>
+                    <input type="text" id="addressInput" placeholder="اكتب عنوان التوصيل...">
+                </div>
+            </div>
+
+            <!-- بيانات الوصل -->
+            <div class="info-box">
+                <div class="info-row">
+                    <span class="info-label">تاريخ الإصدار (Date):</span>
+                    <input type="text" id="issueDate">
+                </div>
+                <div class="info-row">
+                    <span class="info-label">رقم المرجع (Ref):</span>
+                    <input type="text" id="refNumber" readonly placeholder="يتم توليده تلقائياً...">
+                </div>
+                <div class="info-row">
+                    <span class="info-label">اسم السائق / المندوب:</span>
+                    <input type="text" placeholder="اكتب اسم السائق...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <table id="productsTable">
+            <thead>
+                <tr>
+                    <th width="10%">العدد</th>
+                    <th width="20%">كود المنتج</th>
+                    <th width="20%">الحالة</th>
+                    <th width="45%">ملاحظات المنتج / التوصيل</th>
+                    <th width="5%" class="actions-column">إجراء</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- سيبدأ الوصل بثلاثة أسطر افتراضية جاهزة -->
+                <tr>
+                    <td><input type="text" class="table-input"></td>
+                    <td><input type="text" class="table-input"></td>
+                    <td><input type="text" class="table-input"></td>
+                    <td><input type="text" class="table-input"></td>
+                    <td><button class="btn-delete-row" onclick="deleteRow(this)">🗑️</button></td>
+                </tr>
+                <tr>
+                    <td><input type="text" class="table-input"></td>
+                    <td><input type="text" class="table-input"></td>
+                    <td><input type="text" class="table-input"></td>
+                    <td><input type="text" class="table-input"></td>
+                    <td><button class="btn-delete-row" onclick="deleteRow(this)">🗑️</button></td>
+                </tr>
+                <tr>
+                    <td><input type="text" class="table-input"></td>
+                    <td><input type="text" class="table-input"></td>
+                    <td><input type="text" class="table-input"></td>
+                    <td><input type="text" class="table-input"></td>
+                    <td><button class="btn-delete-row" onclick="deleteRow(this)">🗑️</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Terms and Conditions -->
+        <div class="terms">
+            <h4>شروط وأحكام الصيانة والتسليم:</h4>
+            <ul>
+                <li>الشركة لن تسلم أي منتج إلا بوجود الوصل الورقي.</li>
+                <li>يسقط الضمان إذا تم فتح المنتج خارج الورشة المركزية أو أحد الورش المعتمدة.</li>
+                <li>مدة الضمان سنة واحدة لا يشمل حالات الكسر أو سوء الاستخدام.</li>
+                <li>يسقط الحق باستلام المنتج بعد مرور اسبوعين على اكمال صيانته.</li>
+                <li><strong>يقر المستلم بتسلم البضاعة بحالة جيدة وخالية من أي كسور ظاهرية.</strong></li>
+            </ul>
+        </div>
+
+        <!-- Signatures -->
+        <div class="signatures">
+            <div class="signature-box">
+                <div class="signature-line">توقيع مسؤول الورشة / السائق</div>
+            </div>
+            
+            <div class="signature-box">
+                <div class="signature-line">توقيع واستلام الزبون</div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div style="margin-bottom: 15px;">Make all checks payable to مركز صيانة نيوآل</div>
+            <div style="display: flex; justify-content: center; gap: 20px; align-items: center; font-weight: bold;">
+                <span>📍 البصرة - شارع الوطن</span>
+                <span>|</span>
+                <span>📞 07734855588</span>
+                <span>|</span>
+                <span>✉️ service.basra@newal.com</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- كود الجافاسكربت لإضافة صفوف برمجياً وتوليد المرجع -->
+    <script>
+        // دالة وضع تاريخ اليوم تلقائياً
+        function setTodayDate() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            let mm = today.getMonth() + 1;
+            let dd = today.getDate();
+
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+
+            document.getElementById('issueDate').value = dd + '/' + mm + '/' + yyyy;
+        }
+
+        // دالة توليد رقم المرجع الذكي (التاريخ + آخر 3 أرقام من الهاتف)
+        function generateRef() {
+            const phoneInput = document.getElementById('phoneInput').value;
+            const cleanPhone = phoneInput.replace(/\s+/g, ''); 
+            
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const m = today.getMonth() + 1; 
+            const d = today.getDate();
+
+            const datePart = yyyy.toString() + m.toString() + d.toString();
+            
+            let phonePart = "";
+            if (cleanPhone.length >= 3) {
+                phonePart = cleanPhone.slice(-3);
+            }
+
+            if (phonePart !== "") {
+                document.getElementById('refNumber').value = datePart + phonePart;
+            } else {
+                document.getElementById('refNumber').value = "";
+            }
+        }
+
+        // دالة إضافة سطر (حقل جديد) للجدول
+        function addNewRow() {
+            const tableBody = document.getElementById('productsTable').getElementsByTagName('tbody')[0];
+            const newRow = tableBody.insertRow();
+
+            // إنشاء الخلايا الأربعة للحقول بالإضافة لزر الحذف
+            const cell1 = newRow.insertCell(0);
+            const cell2 = newRow.insertCell(1);
+            const cell3 = newRow.insertCell(2);
+            const cell4 = newRow.insertCell(3);
+            const cell5 = newRow.insertCell(4);
+
+            cell1.innerHTML = '<input type="text" class="table-input">';
+            cell2.innerHTML = '<input type="text" class="table-input">';
+            cell3.innerHTML = '<input type="text" class="table-input">';
+            cell4.innerHTML = '<input type="text" class="table-input">';
+            cell5.innerHTML = '<button class="btn-delete-row" onclick="deleteRow(this)">🗑️</button>';
+        }
+
+        // دالة حذف السطر
+        function deleteRow(button) {
+            const row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+        }
+
+
+        // ============================================================
+        // الإدخال الذكي المحلي: لا يستخدم أي API أو اتصال بالذكاء الاصطناعي
+        // ============================================================
+
+        const smartFieldAliases = {
+            name: [
+                'اسم العميل', 'اسم الزبون', 'اسم الوكيل أو الزبون',
+                'اسم الوكيل', 'العميل', 'الزبون'
+            ],
+            phone: [
+                'رقم الهاتف', 'رقم تلفون', 'رقم تلفونه', 'رقم التليفون', 'الهاتف',
+                'التلفون', 'تلفون', 'تلفونه', 'موبايل', 'رقم الموبايل'
+            ],
+            address: [
+                'العنوان', 'عنوانه', 'عنوان التوصيل', 'عنوان العميل', 'عنوان الزبون'
+            ],
+            code: [
+                'كود المنتج', 'كود المادة', 'رمز المنتج', 'رمز المادة',
+                'الباركود', 'الكود'
+            ],
+            qty: [
+                'العدد', 'الكمية', 'عدد القطع', 'كمية'
+            ],
+            status: [
+                'الحالة', 'حالة المنتج', 'حالة المادة'
+            ],
+            notes: [
+                'ملاحظات المنتج / التوصيل', 'ملاحظات المنتج والتوصيل',
+                'ملاحظات التوصيل', 'ملاحظات المنتج', 'الملاحظات', 'ملاحظة', 'ملاحظات'
+            ]
+        };
+
+        function normalizeArabicText(value) {
+            return (value || '')
+                .replace(/\u200f|\u200e/g, '')
+                .replace(/[：]/g, ':')
+                .replace(/\r/g, '')
+                .trim();
+        }
+
+        function escapeRegex(value) {
+            return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function allAliases() {
+            return Object.values(smartFieldAliases)
+                .flat()
+                .sort((a, b) => b.length - a.length);
+        }
+
+        function aliasGroup(list) {
+            return list
+                .slice()
+                .sort((a, b) => b.length - a.length)
+                .map(escapeRegex)
+                .join('|');
+        }
+
+        function canonicalField(label) {
+            const cleaned = normalizeArabicText(label)
+                .replace(/\s+/g, ' ')
+                .replace(/[:\-–—]+$/g, '')
+                .trim();
+
+            for (const [field, aliases] of Object.entries(smartFieldAliases)) {
+                if (aliases.some(alias => cleaned === alias)) {
+                    return field;
+                }
+            }
+            return null;
+        }
+
+        function tokenizeLabeledText(rawText) {
+            const text = normalizeArabicText(rawText);
+            const aliases = allAliases();
+            const labelPattern = aliasGroup(aliases);
+
+            // يدعم الحقول في أسطر منفصلة أو في جملة واحدة متتابعة.
+            const regex = new RegExp(
+                '(?:^|\\n|[|،,؛;]|\\s)(' + labelPattern + ')\\s*(?::|=|\\-|–|—)?\\s*',
+                'gmi'
+            );
+
+            const matches = [];
+            let match;
+            while ((match = regex.exec(text)) !== null) {
+                matches.push({
+                    label: match[1],
+                    field: canonicalField(match[1]),
+                    valueStart: regex.lastIndex,
+                    matchStart: match.index
+                });
+            }
+
+            const tokens = [];
+            for (let i = 0; i < matches.length; i++) {
+                const current = matches[i];
+                const end = i + 1 < matches.length ? matches[i + 1].matchStart : text.length;
+                const value = text
+                    .slice(current.valueStart, end)
+                    .replace(/^[\s:：=\-–—]+/, '')
+                    .replace(/[\s|؛;]+$/, '')
+                    .trim();
+
+                if (current.field && value) {
+                    tokens.push({ field: current.field, value });
+                }
+            }
+            return tokens;
+        }
+
+        function fallbackPhone(text) {
+            // يلتقط أرقام الهاتف العراقية الشائعة عند عدم كتابة عنوان "رقم الهاتف".
+            const match = normalizeArabicText(text).match(/(?:\+?964\s?7|07)\d(?:[\s-]?\d){8}/);
+            return match ? match[0].replace(/[\s-]/g, '') : '';
+        }
+
+        function fallbackNaturalFields(text, result) {
+            const normalized = normalizeArabicText(text);
+
+            if (!result.phone) {
+                result.phone = fallbackPhone(normalized);
+            }
+
+            // يدعم صيغ قصيرة مثل: "الاسم أحمد علي" حتى لو لم توضع النقطتان.
+            if (!result.name) {
+                const m = normalized.match(/(?:^|\n)\s*(?:الاسم)\s*[:=\-–—]?\s*([^\n|؛;]+)/i);
+                if (m) result.name = m[1].trim();
+            }
+
+            // دعم "العنوان البصرة..." بصورة مباشرة.
+            if (!result.address) {
+                const m = normalized.match(/(?:^|\n)\s*(?:العنوان|عنوان التوصيل)\s*[:=\-–—]?\s*([^\n|؛;]+)/i);
+                if (m) result.address = m[1].trim();
+            }
+
+            return result;
+        }
+
+        function parseSmartText(rawText) {
+            const tokens = tokenizeLabeledText(rawText);
+            const result = {
+                name: '',
+                phone: '',
+                address: '',
+                products: []
+            };
+
+            let currentProduct = null;
+
+            for (const token of tokens) {
+                if (token.field === 'name' || token.field === 'phone' || token.field === 'address') {
+                    if (!result[token.field]) {
+                        result[token.field] = token.value;
+                    }
+                    continue;
+                }
+
+                // تكرار "كود المنتج" يعني بدء منتج جديد.
+                if (token.field === 'code') {
+                    if (currentProduct && Object.values(currentProduct).some(Boolean)) {
+                        result.products.push(currentProduct);
+                    }
+                    currentProduct = { qty: '', code: '', status: '', notes: '' };
+                    currentProduct.code = token.value;
+                    continue;
+                }
+
+                if (!currentProduct) {
+                    currentProduct = { qty: '', code: '', status: '', notes: '' };
+                }
+                currentProduct[token.field] = token.value;
+            }
+
+            if (currentProduct && Object.values(currentProduct).some(Boolean)) {
+                result.products.push(currentProduct);
+            }
+
+            fallbackNaturalFields(rawText, result);
+            return result;
+        }
+
+        function clearProductRows() {
+            const tbody = document.querySelector('#productsTable tbody');
+            tbody.innerHTML = '';
+        }
+
+        function addProductRowData(product) {
+            addNewRow();
+            const rows = document.querySelectorAll('#productsTable tbody tr');
+            const row = rows[rows.length - 1];
+            const inputs = row.querySelectorAll('input.table-input');
+
+            inputs[0].value = product.qty || '';
+            inputs[1].value = product.code || '';
+            inputs[2].value = product.status || '';
+            inputs[3].value = product.notes || '';
+        }
+
+        function showSmartStatus(message, type) {
+            const el = document.getElementById('smartStatus');
+            el.textContent = message;
+            el.className = type ? ('smart-' + type) : '';
+        }
+
+        function fillFromSmartText() {
+            const rawText = document.getElementById('smartTextInput').value.trim();
+
+            if (!rawText) {
+                showSmartStatus('اكتب أو الصق البيانات أولاً.', 'warn');
+                return;
+            }
+
+            const parsed = parseSmartText(rawText);
+            let filledCount = 0;
+
+            if (parsed.name) {
+                document.getElementById('customerNameInput').value = parsed.name;
+                filledCount++;
+            }
+
+            if (parsed.phone) {
+                document.getElementById('phoneInput').value = parsed.phone;
+                generateRef();
+                filledCount++;
+            }
+
+            if (parsed.address) {
+                document.getElementById('addressInput').value = parsed.address;
+                filledCount++;
+            }
+
+            if (parsed.products.length > 0) {
+                clearProductRows();
+                parsed.products.forEach(addProductRowData);
+                filledCount += parsed.products.length;
+            }
+
+            if (filledCount === 0) {
+                showSmartStatus(
+                    'لم أتمكن من تمييز الحقول. استخدم عناوين مثل: اسم العميل، رقم الهاتف، العنوان، كود المنتج، العدد، الحالة، ملاحظات.',
+                    'error'
+                );
+                return;
+            }
+
+            const productText = parsed.products.length
+                ? ` وتم إدخال ${parsed.products.length} منتج`
+                : '';
+
+            showSmartStatus('تمت تعبئة البيانات بنجاح' + productText + ' ✓', 'ok');
+        }
+
+        function clearSmartText() {
+            document.getElementById('smartTextInput').value = '';
+            showSmartStatus('', '');
+            document.getElementById('smartTextInput').focus();
+        }
+
+
+        // تشغيل الإعدادات فور تحميل الصفحة
+        window.onload = setTodayDate;
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إنشاء وصولات التسليم من Excel - نيوآل</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #34495e;
+      --accent-color: #3498db;
+      --success-color: #27ae60;
+      --warning-color: #d68910;
+      --danger-color: #c0392b;
+      --bg-color: #f5f6fa;
+      --text-color: #333;
+      --border-color: #bdc3c7;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+    }
+
+    button, input, select {
+      font-family: 'Cairo', sans-serif;
+    }
+
+    .app-panel {
+      max-width: 1100px;
+      margin: 0 auto 24px;
+      background: #fff;
+      border-radius: 10px;
+      padding: 22px;
+      box-shadow: 0 5px 22px rgba(0,0,0,.08);
+      border-top: 6px solid var(--accent-color);
+    }
+
+    .app-panel h1 {
+      margin: 0 0 6px;
+      color: var(--primary-color);
+      font-size: 25px;
+    }
+
+    .app-panel .subtitle {
+      margin: 0 0 18px;
+      color: #66757f;
+      line-height: 1.8;
+      font-size: 14px;
+    }
+
+    .upload-row {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 15px;
+      align-items: end;
+    }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--secondary-color);
+      margin-bottom: 6px;
+    }
+
+    .field input[type="file"],
+    .field input[type="text"],
+    .field select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cfd6dc;
+      border-radius: 6px;
+      background: #fff;
+      min-height: 44px;
+    }
+
+    .toolbar {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 6px;
+      padding: 11px 18px;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    .btn-primary { background: var(--accent-color); }
+    .btn-success { background: var(--success-color); }
+    .btn-dark { background: var(--primary-color); }
+    .btn-secondary { background: #7f8c8d; }
+
+    .status-box {
+      margin-top: 15px;
+      border-radius: 7px;
+      padding: 12px 14px;
+      background: #f8f9fa;
+      border: 1px solid #e6e8eb;
+      font-size: 13px;
+      line-height: 1.8;
+      display: none;
+    }
+
+    .status-box.ok {
+      display: block;
+      border-right: 4px solid var(--success-color);
+    }
+
+    .status-box.warn {
+      display: block;
+      border-right: 4px solid var(--warning-color);
+    }
+
+    .status-box.error {
+      display: block;
+      border-right: 4px solid var(--danger-color);
+    }
+
+    .summary-grid {
+      display: none;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .summary-grid.show { display: grid; }
+
+    .summary-card {
+      background: #f8f9fa;
+      border: 1px solid #e6e8eb;
+      padding: 12px;
+      border-radius: 7px;
+      text-align: center;
+    }
+
+    .summary-card strong {
+      display: block;
+      color: var(--primary-color);
+      font-size: 22px;
+    }
+
+    .summary-card span {
+      font-size: 12px;
+      color: #6c757d;
+    }
+
+    .customers-wrap {
+      display: none;
+      max-width: 1100px;
+      margin: 0 auto 20px;
+      background: #fff;
+      border-radius: 10px;
+      padding: 18px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.06);
+    }
+
+    .customers-wrap.show { display: block; }
+
+    .customers-header {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .customers-header h3 {
+      margin: 0;
+      color: var(--primary-color);
+    }
+
+    #customerSearch {
+      width: min(100%, 360px);
+      padding: 9px 12px;
+      border: 1px solid #cfd6dc;
+      border-radius: 6px;
+    }
+
+    .customers-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+      max-height: 340px;
+      overflow: auto;
+    }
+
+    .customer-item {
+      border: 1px solid #e1e5e8;
+      border-radius: 7px;
+      padding: 10px 12px;
+      cursor: pointer;
+      background: #fff;
+      transition: .15s ease;
+    }
+
+    .customer-item:hover,
+    .customer-item.active {
+      border-color: var(--accent-color);
+      background: #f3f9fd;
+    }
+
+    .customer-item .name {
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 3px;
+    }
+
+    .customer-item .meta {
+      font-size: 12px;
+      color: #6c757d;
+    }
+
+    #receiptsHost {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .receipt-page {
+      background: #fff;
+      padding: 40px;
+      margin: 0 auto 24px;
+      box-shadow: 0 0 20px rgba(0,0,0,.1);
+      border-top: 8px solid var(--primary-color);
+      border-radius: 8px;
+    }
+
+    .receipt-page.hidden { display: none; }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    .company-info h1 {
+      margin: 0;
+      color: var(--primary-color);
+      font-size: 28px;
+    }
+
+    .company-info p {
+      margin: 5px 0 0;
+      color: #7f8c8d;
+      font-size: 14px;
+    }
+
+    .receipt-title { text-align: left; }
+
+    .receipt-title h2 {
+      margin: 0;
+      font-size: 32px;
+      color: var(--secondary-color);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .info-box {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 6px;
+      border: 1px solid #e9ecef;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      border-bottom: 1px dashed #ccc;
+      padding-bottom: 4px;
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .info-label {
+      font-weight: 600;
+      color: var(--secondary-color);
+      white-space: nowrap;
+    }
+
+    .receipt-input {
+      width: 100%;
+      min-width: 0;
+      font-family: 'Cairo', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-color);
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 4px 8px;
+      background: #fff;
+    }
+
+    .receipt-input[readonly] {
+      background: #e9ecef;
+      color: var(--secondary-color);
+    }
+
+    table.products-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      table-layout: fixed;
+    }
+
+    .products-table th,
+    .products-table td {
+      border: 1px solid var(--border-color);
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .products-table th {
+      background: var(--primary-color);
+      color: #fff;
+      font-weight: 600;
+      padding: 10px 7px;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .products-table td {
+      padding: 7px;
+      font-size: 13px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .terms {
+      background: #fcfcfc;
+      border-right: 4px solid var(--accent-color);
+      padding: 15px 20px;
+      margin: 20px 0 40px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .terms h4 { margin: 0 0 10px; color: var(--primary-color); }
+    .terms ul { margin: 0; padding-right: 20px; }
+
+    .signatures {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 60px;
+      margin-bottom: 30px;
+    }
+
+    .signature-box { text-align: center; width: 250px; }
+    .signature-line {
+      border-top: 1px solid var(--text-color);
+      margin-top: 60px;
+      padding-top: 10px;
+      font-weight: 600;
+    }
+
+    .footer {
+      text-align: center;
+      border-top: 1px solid var(--border-color);
+      padding-top: 20px;
+      font-size: 13px;
+      color: #7f8c8d;
+    }
+
+    .receipt-tools {
+      max-width: 900px;
+      margin: 0 auto 10px;
+      display: none;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .receipt-tools.show { display: flex; }
+
+    @media (max-width: 760px) {
+      body { padding: 10px; }
+      .upload-row, .info-grid { grid-template-columns: 1fr; }
+      .summary-grid { grid-template-columns: repeat(2, 1fr); }
+      .customers-list { grid-template-columns: 1fr; }
+      .receipt-page { padding: 18px; }
+      .header { align-items: flex-start; }
+      .company-info h1 { font-size: 21px; }
+      .receipt-title h2 { font-size: 24px; }
+      .products-table th, .products-table td { font-size: 11px; }
+    }
+
+    @page {
+      size: A4;
+      margin: 10mm;
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+
+      .app-panel,
+      .customers-wrap,
+      .receipt-tools {
+        display: none !important;
+      }
+
+      #receiptsHost {
+        max-width: none;
+        margin: 0;
+      }
+
+      .receipt-page {
+        display: block !important;
+        box-shadow: none;
+        border: none;
+        border-radius: 0;
+        margin: 0;
+        padding: 0;
+        page-break-after: always;
+        break-after: page;
+      }
+
+      .receipt-page:last-child {
+        page-break-after: auto;
+        break-after: auto;
+      }
+
+      body.print-selected .receipt-page {
+        display: none !important;
+      }
+
+      body.print-selected .receipt-page.print-target {
+        display: block !important;
+      }
+
+      .receipt-input {
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+      }
+
+      .info-row { border-bottom: 1px solid #eee; }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="app-panel">
+    <h1>📊 إنشاء وصولات التسليم من ملف Excel</h1>
+    <p class="subtitle">
+      ارفع ملف Excel، وسيتم التعرف على الزبائن والمنتجات تلقائياً.
+      إذا كان الزبون مكرراً بأكثر من صف، ستجمع جميع منتجاته في وصل واحد.
+      معالجة الملف تتم داخل المتصفح ولا يتم إرسال بيانات Excel إلى أي خدمة ذكاء اصطناعي.
+    </p>
+
+    <div class="upload-row">
+      <div class="field">
+        <label for="excelFile">ملف Excel</label>
+        <input id="excelFile" type="file" accept=".xlsx,.xls,.xlsb,.csv">
+      </div>
+      <div class="field">
+        <label for="globalDriver">اسم السائق / المندوب (اختياري)</label>
+        <input id="globalDriver" type="text" placeholder="يُطبق على جميع الوصولات">
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <button id="processBtn" class="btn btn-primary" type="button">⚙️ قراءة الملف وإنشاء الوصولات</button>
+      <button id="showAllBtn" class="btn btn-secondary" type="button" disabled>عرض جميع الوصولات</button>
+      <button id="printAllBtn" class="btn btn-success" type="button" disabled>🖨️ طباعة جميع الوصولات</button>
+    </div>
+
+    <div id="statusBox" class="status-box"></div>
+
+    <div id="summaryGrid" class="summary-grid">
+      <div class="summary-card"><strong id="customersCount">0</strong><span>عدد الزبائن</span></div>
+      <div class="summary-card"><strong id="productsCount">0</strong><span>عدد الأجهزة / المنتجات</span></div>
+      <div class="summary-card"><strong id="receiptsCount">0</strong><span>عدد الوصولات</span></div>
+      <div class="summary-card"><strong id="sheetName">-</strong><span>ورقة البيانات</span></div>
+    </div>
+  </section>
+
+  <section id="customersWrap" class="customers-wrap">
+    <div class="customers-header">
+      <h3>الزبائن والوصولات</h3>
+      <input id="customerSearch" type="text" placeholder="بحث بالاسم أو رقم الهاتف أو العنوان...">
+    </div>
+    <div id="customersList" class="customers-list"></div>
+  </section>
+
+  <div id="receiptTools" class="receipt-tools">
+    <button class="btn btn-dark" type="button" onclick="printSelectedReceipt()">🖨️ طباعة الوصل الحالي</button>
+    <button class="btn btn-secondary" type="button" onclick="showAllReceipts()">عرض جميع الوصولات</button>
+  </div>
+
+  <main id="receiptsHost"></main>
+
+<script>
+  const state = {
+    groups: [],
+    activeIndex: 0,
+    selectedSheetName: '',
+    totalRows: 0
+  };
+
+  const aliases = {
+    name: ['اسم', 'اسم العميل', 'اسم الزبون', 'العميل', 'الزبون'],
+    phone: ['تليفون محمول', 'هاتف محمول', 'رقم الهاتف', 'رقم تلفون', 'التلفون', 'الهاتف', 'موبايل'],
+    province: ['مقاطعة', 'المحافظة'],
+    area: ['المنطقة', 'منطقة'],
+    address: ['عنوان العميل', 'العنوان', 'عنوان الزبون', 'عنوان التوصيل'],
+    code: ['نموذج', 'كود المنتج', 'كود المادة', 'رمز المنتج', 'الموديل', 'model'],
+    status: ['حالة', 'الحالة', 'حالة المنتج'],
+    notes: ['تفاصيل الخطأ', 'ملاحظات المنتج / التوصيل', 'ملاحظات', 'الملاحظات', 'تفاصيل العطل'],
+    serial: ['الرقم التسلسلي', 'سيريال', 'serial']
+  };
+
+  function normalize(value) {
+    return String(value ?? '')
+      .replace(/\u00a0/g, ' ')
+      .replace(/\u200e|\u200f/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function normalizeHeader(value) {
+    return normalize(value)
+      .toLowerCase()
+      .replace(/[ـ]/g, '')
+      .replace(/[إأآ]/g, 'ا')
+      .replace(/ة/g, 'ه')
+      .replace(/[^\u0600-\u06FFa-z0-9]/gi, '');
+  }
+
+  function normalizedAliasSet(list) {
+    return new Set(list.map(normalizeHeader));
+  }
+
+  const aliasSets = Object.fromEntries(
+    Object.entries(aliases).map(([key, list]) => [key, normalizedAliasSet(list)])
+  );
+
+  function headerMatches(header, field) {
+    return aliasSets[field].has(normalizeHeader(header));
+  }
+
+  function findHeaderRow(rows) {
+    const limit = Math.min(rows.length, 20);
+    let best = { index: -1, score: -1 };
+
+    for (let r = 0; r < limit; r++) {
+      const row = rows[r] || [];
+      let score = 0;
+      for (const cell of row) {
+        if (headerMatches(cell, 'name')) score += 3;
+        if (headerMatches(cell, 'code')) score += 3;
+        if (headerMatches(cell, 'phone')) score += 2;
+        if (headerMatches(cell, 'status')) score += 1;
+        if (headerMatches(cell, 'notes')) score += 1;
+      }
+      if (score > best.score) best = { index: r, score };
+    }
+
+    return best.score >= 5 ? best.index : -1;
+  }
+
+  function getMatchingIndexes(headers, field) {
+    const indexes = [];
+    headers.forEach((h, i) => {
+      if (headerMatches(h, field)) indexes.push(i);
+    });
+    return indexes;
+  }
+
+  function firstUseful(row, indexes) {
+    for (const i of indexes) {
+      const v = normalize(row[i]);
+      if (v && v !== '-') return v;
+    }
+    return '';
+  }
+
+  function bestStatus(row, indexes) {
+    const candidates = indexes
+      .map(i => normalize(row[i]))
+      .filter(v => v && v !== '-');
+
+    if (!candidates.length) return '';
+
+    // في ملف نيوآل يظهر أحياناً عمود حالة يحتوي قائمة الحالات كاملة.
+    // نفضّل أقصر قيمة معقولة مثل "12- المنتج جاهز للتسليم".
+    candidates.sort((a, b) => {
+      const aPenalty = a.length > 120 ? 10000 : 0;
+      const bPenalty = b.length > 120 ? 10000 : 0;
+      return (a.length + aPenalty) - (b.length + bPenalty);
+    });
+
+    let value = candidates[0];
+
+    // احتياط إذا لم يوجد إلا الحقل الطويل: استخراج الحالة الأولى فقط.
+    if (value.length > 120) {
+      const m = value.match(/^\s*(\d+\s*-\s*.*?)(?=\s*\d+\s*-\s*|$)/);
+      if (m) value = normalize(m[1]);
+    }
+    return value;
+  }
+
+  function bestNotes(row, indexes) {
+    const candidates = indexes
+      .map(i => normalize(row[i]))
+      .filter(v => v && v !== '-');
+
+    if (!candidates.length) return '';
+    candidates.sort((a, b) => b.length - a.length);
+    return candidates[0];
+  }
+
+  function digitsOnly(v) {
+    return normalize(v).replace(/\D/g, '');
+  }
+
+  function looksLikePhone(v) {
+    const d = digitsOnly(v);
+    return d.length >= 9 && d.length <= 14;
+  }
+
+  function formatPhone(v) {
+    let d = digitsOnly(v);
+    if (!d) return '';
+
+    if (d.startsWith('964') && d.length >= 12) {
+      d = '0' + d.slice(3);
+    } else if (d.startsWith('7') && d.length === 10) {
+      d = '0' + d;
+    }
+    return d || normalize(v);
+  }
+
+  function buildAddress(addressValue, province, area) {
+    const rawAddress = normalize(addressValue);
+    if (rawAddress && rawAddress !== '-' && !looksLikePhone(rawAddress)) {
+      return rawAddress;
+    }
+
+    const parts = [normalize(province), normalize(area)]
+      .filter(v => v && v !== '-');
+
+    return [...new Set(parts)].join(' - ');
+  }
+
+  function stripDealerPrefix(name) {
+    return normalize(name).replace(/^\(\s*[\d.]+\s*\)\s*/, '').trim();
+  }
+
+  function customerKey(name, phone, address) {
+    const n = stripDealerPrefix(name).toLowerCase();
+    const p = digitsOnly(phone);
+    const a = normalize(address).toLowerCase();
+
+    // الاسم + الهاتف يمنع جمع زبونين مختلفين بالخطأ.
+    if (p) return `p:${p}|n:${n}`;
+    return `n:${n}|a:${a}`;
+  }
+
+  function chooseDataSheet(workbook) {
+    let best = null;
+
+    workbook.SheetNames.forEach(sheetName => {
+      const ws = workbook.Sheets[sheetName];
+      const rows = XLSX.utils.sheet_to_json(ws, {
+        header: 1,
+        defval: '',
+        raw: false,
+        blankrows: false
+      });
+
+      const headerRow = findHeaderRow(rows);
+      if (headerRow < 0) return;
+
+      const dataRows = rows.slice(headerRow + 1)
+        .filter(row => row.some(cell => normalize(cell)));
+
+      const score = dataRows.length;
+      if (!best || score > best.score) {
+        best = { sheetName, rows, headerRow, dataRows, score };
+      }
+    });
+
+    return best;
+  }
+
+  function parseWorkbook(workbook) {
+    const selected = chooseDataSheet(workbook);
+    if (!selected) {
+      throw new Error('لم أجد ورقة تحتوي أعمدة اسم الزبون وكود المنتج.');
+    }
+
+    const headers = selected.rows[selected.headerRow].map(normalize);
+    const idx = {
+      name: getMatchingIndexes(headers, 'name'),
+      phone: getMatchingIndexes(headers, 'phone'),
+      province: getMatchingIndexes(headers, 'province'),
+      area: getMatchingIndexes(headers, 'area'),
+      address: getMatchingIndexes(headers, 'address'),
+      code: getMatchingIndexes(headers, 'code'),
+      status: getMatchingIndexes(headers, 'status'),
+      notes: getMatchingIndexes(headers, 'notes'),
+      serial: getMatchingIndexes(headers, 'serial')
+    };
+
+    if (!idx.name.length || !idx.code.length) {
+      throw new Error('الأعمدة الأساسية غير موجودة: يجب وجود اسم الزبون وكود/نموذج المنتج.');
+    }
+
+    const groupsMap = new Map();
+    let totalRows = 0;
+
+    selected.dataRows.forEach((row, rowOffset) => {
+      const name = firstUseful(row, idx.name);
+      const code = firstUseful(row, idx.code);
+
+      // تجاهل الصفوف التي لا تحتوي زبوناً أو منتجاً.
+      if (!name || !code) return;
+
+      let phone = firstUseful(row, idx.phone);
+      const rawAddress = firstUseful(row, idx.address);
+      const province = firstUseful(row, idx.province);
+      const area = firstUseful(row, idx.area);
+
+      // بعض ملفات النظام تضع رقم الهاتف المنسق داخل "عنوان العميل".
+      if ((!phone || phone === '-') && looksLikePhone(rawAddress)) {
+        phone = rawAddress;
+      }
+
+      phone = formatPhone(phone);
+      const address = buildAddress(rawAddress, province, area);
+      const status = bestStatus(row, idx.status);
+      const notes = bestNotes(row, idx.notes);
+      const serial = firstUseful(row, idx.serial);
+
+      const key = customerKey(name, phone, address);
+
+      if (!groupsMap.has(key)) {
+        groupsMap.set(key, {
+          name,
+          phone,
+          address,
+          products: [],
+          originalRows: 0
+        });
+      }
+
+      const customer = groupsMap.get(key);
+      customer.originalRows++;
+      totalRows++;
+
+      customer.products.push({
+        qty: 1,
+        code,
+        status,
+        notes,
+        serial,
+        sourceRow: selected.headerRow + rowOffset + 2
+      });
+    });
+
+    const groups = Array.from(groupsMap.values())
+      .map(customer => ({
+        ...customer,
+        products: mergeIdenticalProducts(customer.products)
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name, 'ar'));
+
+    return {
+      groups,
+      selectedSheetName: selected.sheetName,
+      totalRows
+    };
+  }
+
+  function mergeIdenticalProducts(products) {
+    const map = new Map();
+
+    products.forEach(p => {
+      const key = [
+        normalize(p.code).toLowerCase(),
+        normalize(p.status).toLowerCase(),
+        normalize(p.notes).toLowerCase()
+      ].join('|');
+
+      if (!map.has(key)) {
+        map.set(key, { ...p, qty: 1 });
+      } else {
+        map.get(key).qty += 1;
+      }
+    });
+
+    return Array.from(map.values());
+  }
+
+  function todayString() {
+    const d = new Date();
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    return `${dd}/${mm}/${d.getFullYear()}`;
+  }
+
+  function refFor(customer, index) {
+    const d = new Date();
+    const datePart = `${d.getFullYear()}${d.getMonth() + 1}${d.getDate()}`;
+    const phone = digitsOnly(customer.phone);
+    if (phone.length >= 3) return datePart + phone.slice(-3);
+    return datePart + String(index + 1).padStart(3, '0');
+  }
+
+  function el(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  function makeInput(value, readonly = false) {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'receipt-input';
+    input.value = value || '';
+    if (readonly) input.readOnly = true;
+    return input;
+  }
+
+  function infoRow(label, value, readonly = false, extraClass = '') {
+    const row = el('div', 'info-row');
+    row.appendChild(el('span', 'info-label', label));
+    const input = makeInput(value, readonly);
+    if (extraClass) input.classList.add(extraClass);
+    row.appendChild(input);
+    return row;
+  }
+
+  function buildReceipt(customer, index) {
+    const receipt = el('section', 'receipt-page');
+    receipt.dataset.index = index;
+
+    const header = el('div', 'header');
+
+    const company = el('div', 'company-info');
+    company.appendChild(el('h1', '', 'مركز صيانة نيوآل'));
+    company.appendChild(el('p', '', 'Newal Service Center'));
+
+    const title = el('div', 'receipt-title');
+    title.appendChild(el('h2', '', 'Service'));
+    const titleP = el('p', '', 'وصل تسليم (توصيل)');
+    titleP.style.margin = '0';
+    titleP.style.fontWeight = 'bold';
+    titleP.style.color = '#7f8c8d';
+    title.appendChild(titleP);
+
+    header.append(company, title);
+    receipt.appendChild(header);
+
+    const infoGrid = el('div', 'info-grid');
+    const customerBox = el('div', 'info-box');
+    customerBox.appendChild(infoRow('اسم الوكيل أو الزبون:', customer.name));
+    customerBox.appendChild(infoRow('رقم الهاتف:', customer.phone));
+    customerBox.appendChild(infoRow('العنوان:', customer.address));
+
+    const receiptBox = el('div', 'info-box');
+    receiptBox.appendChild(infoRow('تاريخ الإصدار (Date):', todayString()));
+    receiptBox.appendChild(infoRow('رقم المرجع (Ref):', refFor(customer, index), true));
+
+    const driverRow = infoRow('اسم السائق / المندوب:', document.getElementById('globalDriver').value);
+    driverRow.querySelector('input').classList.add('driver-input');
+    receiptBox.appendChild(driverRow);
+
+    infoGrid.append(customerBox, receiptBox);
+    receipt.appendChild(infoGrid);
+
+    const table = el('table', 'products-table');
+    const thead = document.createElement('thead');
+    const hr = document.createElement('tr');
+    [
+      ['العدد', '10%'],
+      ['كود المنتج', '20%'],
+      ['الحالة', '22%'],
+      ['ملاحظات المنتج / التوصيل', '48%']
+    ].forEach(([label, width]) => {
+      const th = el('th', '', label);
+      th.style.width = width;
+      hr.appendChild(th);
+    });
+    thead.appendChild(hr);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    customer.products.forEach(product => {
+      const tr = document.createElement('tr');
+      [product.qty, product.code, product.status, product.notes].forEach(value => {
+        tr.appendChild(el('td', '', String(value ?? '')));
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    receipt.appendChild(table);
+
+    const terms = el('div', 'terms');
+    terms.appendChild(el('h4', '', 'شروط وأحكام الصيانة والتسليم:'));
+    const ul = document.createElement('ul');
+    [
+      'الشركة لن تسلم أي منتج إلا بوجود الوصل الورقي.',
+      'يسقط الضمان إذا تم فتح المنتج خارج الورشة المركزية أو أحد الورش المعتمدة.',
+      'مدة الضمان سنة واحدة لا يشمل حالات الكسر أو سوء الاستخدام.',
+      'يسقط الحق باستلام المنتج بعد مرور اسبوعين على اكمال صيانته.',
+      'يقر المستلم بتسلم البضاعة بحالة جيدة وخالية من أي كسور ظاهرية.'
+    ].forEach((txt, i) => {
+      const li = el('li', '', txt);
+      if (i === 4) li.style.fontWeight = '700';
+      ul.appendChild(li);
+    });
+    terms.appendChild(ul);
+    receipt.appendChild(terms);
+
+    const signatures = el('div', 'signatures');
+    const s1 = el('div', 'signature-box');
+    s1.appendChild(el('div', 'signature-line', 'توقيع مسؤول الورشة / السائق'));
+    const s2 = el('div', 'signature-box');
+    s2.appendChild(el('div', 'signature-line', 'توقيع واستلام الزبون'));
+    signatures.append(s1, s2);
+    receipt.appendChild(signatures);
+
+    const footer = el('div', 'footer');
+    const line1 = el('div', '', 'Make all checks payable to مركز صيانة نيوآل');
+    line1.style.marginBottom = '15px';
+    footer.appendChild(line1);
+    footer.appendChild(el('div', '', '📍 البصرة - شارع الوطن   |   📞 07734855588   |   ✉️ service.basra@newal.com'));
+    receipt.appendChild(footer);
+
+    return receipt;
+  }
+
+  function renderAllReceipts() {
+    const host = document.getElementById('receiptsHost');
+    host.innerHTML = '';
+
+    state.groups.forEach((customer, index) => {
+      host.appendChild(buildReceipt(customer, index));
+    });
+
+    syncDriverToReceipts();
+  }
+
+  function renderCustomerList() {
+    const list = document.getElementById('customersList');
+    list.innerHTML = '';
+
+    state.groups.forEach((customer, index) => {
+      const item = el('div', 'customer-item');
+      item.dataset.index = index;
+
+      const name = el('div', 'name', customer.name);
+      const productCount = customer.products.reduce((sum, p) => sum + Number(p.qty || 0), 0);
+      const meta = el(
+        'div',
+        'meta',
+        `${customer.phone || 'بدون هاتف'} • ${productCount} منتج${customer.address ? ' • ' + customer.address : ''}`
+      );
+
+      item.append(name, meta);
+      item.addEventListener('click', () => showReceipt(index));
+      list.appendChild(item);
+    });
+  }
+
+  function showReceipt(index) {
+    state.activeIndex = index;
+    document.querySelectorAll('.receipt-page').forEach((node, i) => {
+      node.classList.toggle('hidden', i !== index);
+      node.classList.remove('print-target');
+    });
+
+    document.querySelectorAll('.customer-item').forEach((node, i) => {
+      node.classList.toggle('active', i === index);
+    });
+
+    document.getElementById('receiptTools').classList.add('show');
+    window.scrollTo({ top: document.getElementById('receiptsHost').offsetTop - 10, behavior: 'smooth' });
+  }
+
+  function showAllReceipts() {
+    document.querySelectorAll('.receipt-page').forEach(node => {
+      node.classList.remove('hidden', 'print-target');
+    });
+    document.querySelectorAll('.customer-item').forEach(node => node.classList.remove('active'));
+  }
+
+  function printSelectedReceipt() {
+    const receipts = document.querySelectorAll('.receipt-page');
+    receipts.forEach((node, i) => {
+      node.classList.toggle('print-target', i === state.activeIndex);
+    });
+
+    document.body.classList.add('print-selected');
+    window.print();
+    setTimeout(() => {
+      document.body.classList.remove('print-selected');
+      receipts.forEach(node => node.classList.remove('print-target'));
+    }, 300);
+  }
+
+  function printAllReceipts() {
+    showAllReceipts();
+    document.body.classList.remove('print-selected');
+    window.print();
+  }
+
+  function showStatus(message, type = 'ok') {
+    const box = document.getElementById('statusBox');
+    box.className = `status-box ${type}`;
+    box.textContent = message;
+  }
+
+  function setSummary() {
+    document.getElementById('customersCount').textContent = state.groups.length;
+    document.getElementById('productsCount').textContent = state.totalRows;
+    document.getElementById('receiptsCount').textContent = state.groups.length;
+    document.getElementById('sheetName').textContent = state.selectedSheetName;
+    document.getElementById('summaryGrid').classList.add('show');
+  }
+
+  async function processExcel() {
+    const input = document.getElementById('excelFile');
+    const file = input.files && input.files[0];
+
+    if (!file) {
+      showStatus('اختر ملف Excel أولاً.', 'warn');
+      return;
+    }
+
+    try {
+      if (typeof XLSX === 'undefined') {
+        throw new Error('تعذر تحميل مكتبة قراءة Excel. تحقق من اتصال الإنترنت ثم أعد فتح الصفحة.');
+      }
+
+      showStatus('جاري قراءة الملف...', 'ok');
+
+      const bytes = await file.arrayBuffer();
+      const workbook = XLSX.read(bytes, {
+        type: 'array',
+        cellDates: false,
+        dense: false
+      });
+
+      const parsed = parseWorkbook(workbook);
+
+      if (!parsed.groups.length) {
+        throw new Error('لم أجد صفوفاً صالحة لإنشاء وصولات.');
+      }
+
+      state.groups = parsed.groups;
+      state.selectedSheetName = parsed.selectedSheetName;
+      state.totalRows = parsed.totalRows;
+      state.activeIndex = 0;
+
+      renderAllReceipts();
+      renderCustomerList();
+      setSummary();
+
+      document.getElementById('customersWrap').classList.add('show');
+      document.getElementById('receiptTools').classList.add('show');
+      document.getElementById('showAllBtn').disabled = false;
+      document.getElementById('printAllBtn').disabled = false;
+
+      showReceipt(0);
+
+      const repeated = state.groups.filter(g => g.originalRows > 1).length;
+      showStatus(
+        `تم إنشاء ${state.groups.length} وصل من ${state.totalRows} صف منتج. ` +
+        `تم جمع المنتجات تلقائياً للزبائن المكررين (${repeated} زبون لديهم أكثر من منتج).`,
+        'ok'
+      );
+
+    } catch (err) {
+      console.error(err);
+      showStatus(`حدث خطأ: ${err.message || err}`, 'error');
+    }
+  }
+
+  function syncDriverToReceipts() {
+    const value = document.getElementById('globalDriver').value;
+    document.querySelectorAll('.driver-input').forEach(input => {
+      input.value = value;
+    });
+  }
+
+  function filterCustomers() {
+    const q = normalize(document.getElementById('customerSearch').value).toLowerCase();
+
+    document.querySelectorAll('.customer-item').forEach((item, index) => {
+      const customer = state.groups[index];
+      const haystack = `${customer.name} ${customer.phone} ${customer.address}`.toLowerCase();
+      item.style.display = !q || haystack.includes(q) ? '' : 'none';
+    });
+  }
+
+  document.getElementById('processBtn').addEventListener('click', processExcel);
+  document.getElementById('showAllBtn').addEventListener('click', showAllReceipts);
+  document.getElementById('printAllBtn').addEventListener('click', printAllReceipts);
+  document.getElementById('globalDriver').addEventListener('input', syncDriverToReceipts);
+  document.getElementById('customerSearch').addEventListener('input', filterCustomers);
+</script>
+
+</body>
+</html>

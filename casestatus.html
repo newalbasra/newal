@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f9fc">
+  <meta name="description" content="نموذج عربي لإنشاء ملاحظات حالات الصيانة ونسخها بسهولة إلى نظام الخدمة.">
+  <title>إنشاء ملاحظة صيانة | NEWAL</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f9fc;
+      --surface: #ffffff;
+      --text: #17243b;
+      --muted: #60718a;
+      --line: #e2e9f2;
+      --blue: #2462bb;
+      --blue-dark: #17498e;
+      --blue-light: #eef5ff;
+      --success: #16704a;
+      --shadow: 0 5px 24px rgba(27, 51, 92, .045);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Tahoma, Arial, system-ui, sans-serif; line-height: 1.75; -webkit-font-smoothing: antialiased; }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid #9fc4ff; outline-offset: 2px; }
+    [hidden] { display: none !important; }
+    .wrap { width: min(1140px, calc(100% - 34px)); margin-inline: auto; }
+    .top { background: var(--surface); border-bottom: 1px solid var(--line); }
+    .top-inner { display: flex; align-items: center; gap: 12px; min-height: 76px; }
+    .brand-mark { width: 44px; height: 44px; display: grid; place-items: center; flex: 0 0 44px; background: #183d78; color: #fff; border-radius: 12px; font: 700 25px Arial, sans-serif; }
+    .brand-title { font-size: 17px; font-family: Arial, Tahoma, sans-serif; letter-spacing: .35px; line-height: 1.3; }
+    .brand-subtitle { display: block; font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .top-label { margin-inline-start: auto; border: 1px solid var(--line); background: #f8fafc; border-radius: 100px; padding: 6px 12px; color: #526981; font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .intro { padding: 35px 0 23px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 7px; background: var(--blue-light); color: var(--blue-dark); border-radius: 40px; padding: 5px 12px; font-size: 12px; font-weight: 700; }
+    .eyebrow::before { content: ''; width: 7px; height: 7px; background: var(--blue); border-radius: 50%; }
+    h1 { margin: 13px 0 5px; font-size: clamp(25px, 3.6vw, 35px); line-height: 1.45; letter-spacing: -.6px; }
+    .intro p { margin: 0; color: var(--muted); font-size: 14px; max-width: 800px; }
+    .layout { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(315px, .88fr); gap: 18px; align-items: start; padding-bottom: 30px; }
+    .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 17px; box-shadow: var(--shadow); min-width: 0; }
+    .panel-head { padding: 20px 22px; border-bottom: 1px solid #edf0f5; }
+    .panel-head-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .panel h2 { margin: 0; font-size: 17px; line-height: 1.5; }
+    .panel-head p { margin: 5px 0 0; font-size: 12px; color: var(--muted); }
+    .mini-tag { background: var(--blue-light); color: var(--blue-dark); font-size: 11px; font-weight: 700; border-radius: 9px; padding: 6px 10px; white-space: nowrap; }
+    .form-body { padding: 21px 22px 24px; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 15px; row-gap: 17px; }
+    .field { min-width: 0; }
+    .field.full { grid-column: 1 / -1; }
+    .field label { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; font-size: 12px; font-weight: 700; margin: 0 0 6px; }
+    .optional { color: var(--muted); font-size: 11px; font-weight: 400; }
+    .control { background: #fbfcff; width: 100%; min-height: 45px; border: 1px solid #d9e2ee; border-radius: 10px; color: var(--text); outline: none; padding: 10px 12px; font-size: 13px; transition: border-color .16s, background .16s; }
+    .control:hover { border-color: #bdcce0; }
+    .control:focus { border-color: #77a7eb; background: #fff; }
+    .control::placeholder { color: #91a0b2; opacity: 1; }
+    textarea.control { min-height: 88px; resize: vertical; line-height: 1.85; }
+    #notes { min-height: 110px; }
+    select.control { appearance: none; padding-inline-end: 12px; padding-inline-start: 32px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%235d718c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: left 10px center; }
+    .field-help { margin-top: 5px; color: #8190a5; font-size: 11px; }
+    .form-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 22px; padding-top: 18px; border-top: 1px solid #edf0f5; }
+    .progress { color: var(--muted); font-size: 12px; }
+    .progress strong { color: var(--blue-dark); }
+    .reset { border: 1px solid #d9e2ed; background: #fff; color: #5a6c83; border-radius: 9px; padding: 9px 14px; min-height: 39px; font-size: 12px; font-weight: 700; }
+    .reset:hover { border-color: #b5c6dc; background: #f7faff; }
+    .preview-panel { position: sticky; top: 18px; }
+    .preview-wrap { padding: 20px 22px 22px; }
+    .preview-label { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 12px; margin-bottom: 10px; }
+    .live-tag { color: var(--success); background: #edf9f2; border: 1px solid #d5ebde; border-radius: 7px; font-size: 10px; padding: 3px 8px; white-space: nowrap; }
+    .preview-text { white-space: pre-wrap; overflow-wrap: anywhere; min-height: 292px; font-family: Tahoma, Arial, sans-serif; font-size: 13px; line-height: 2.3; background: #f9fbfe; color: #30425a; border: 1px solid #e3eaf4; border-radius: 12px; padding: 15px; }
+    .preview-text.empty { color: #73839a; }
+    .copy-btn { width: 100%; border: 1px solid var(--blue); border-radius: 11px; padding: 13px 16px; min-height: 49px; background: var(--blue); color: #fff; font-size: 14px; font-weight: 700; margin-top: 15px; transition: background .15s, border-color .15s; }
+    .copy-btn:not(:disabled):hover { background: var(--blue-dark); border-color: var(--blue-dark); }
+    .copy-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .copy-btn.copied { background: var(--success); border-color: var(--success); }
+    .copy-hint { margin: 10px 0 0; text-align: center; font-size: 11px; color: var(--muted); }
+    .privacy { display: flex; align-items: flex-start; gap: 9px; padding: 15px 16px; border: 1px solid var(--line); border-radius: 11px; background: #fff; margin-top: 13px; color: var(--muted); font-size: 11px; line-height: 1.9; }
+    .privacy svg { flex: 0 0 18px; color: var(--success); margin-top: 2px; }
+    .foot { border-top: 1px solid var(--line); padding: 18px 0 24px; color: var(--muted); font-size: 11px; text-align: center; }
+    .toast { position: fixed; left: 50%; bottom: max(22px, env(safe-area-inset-bottom)); transform: translate(-50%, 30px); z-index: 10; border: 1px solid #cce5d7; background: #fff; color: var(--success); border-radius: 12px; padding: 12px 20px; font-size: 13px; font-weight: 700; box-shadow: 0 12px 35px rgba(20, 38, 67, .14); opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; white-space: nowrap; }
+    .toast.visible { opacity: 1; transform: translate(-50%, 0); }
+    @media (max-width: 840px) { .layout { grid-template-columns: minmax(0, 1fr); } .preview-panel { position: static; } .preview-text { min-height: 0; } }
+    @media (max-width: 540px) { .wrap { width: calc(100% - 24px); } .top-inner { min-height: 68px; } .brand-title { font-size: 15px; } .brand-subtitle { font-size: 10px; } .brand-mark { width: 39px; height: 39px; flex-basis: 39px; font-size: 22px; } .top-label { font-size: 10px; padding: 5px 9px; } .intro { padding: 27px 0 18px; } .intro p { font-size: 13px; } .panel-head, .form-body, .preview-wrap { padding-inline: 16px; } .form-grid { grid-template-columns: 1fr; row-gap: 14px; } .field.full { grid-column: auto; } .preview-text { font-size: 12px; } }
+    @media print { .top, .intro, .form-panel, .copy-btn, .copy-hint, .privacy, .foot, .toast, .preview-label { display: none !important; } body { background: #fff; } .wrap { width: 100%; } .layout { display: block; padding: 0; } .preview-panel { border: 0; box-shadow: none; } .preview-text { background: #fff; border: 0; color: #000; font-size: 14px; } }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <div class="brand-mark" aria-hidden="true">N</div>
+      <div>
+        <div class="brand-title"><strong>NEWAL</strong></div>
+        <span class="brand-subtitle">إدارة خدمات الصيانة</span>
+      </div>
+      <span class="top-label">نموذج توثيق الحالات</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="intro">
+      <span class="eyebrow">أداة موظفي الورش</span>
+      <h1>إنشاء ملاحظة حالة صيانة</h1>
+      <p>املأ بيانات الجهاز، وستظهر الملاحظة باللغة العربية تلقائياً بصيغة موحدة وجاهزة للنسخ إلى نظام الصيانة.</p>
+    </section>
+
+    <div class="layout">
+      <section class="panel form-panel" aria-labelledby="form-heading">
+        <div class="panel-head">
+          <div class="panel-head-row">
+            <div>
+              <h2 id="form-heading">بيانات الحالة</h2>
+              <p>أدخل المعلومات بحسب نتائج الفحص وبيانات الطلب الفعلية.</p>
+            </div>
+            <span class="mini-tag">٧ حقول</span>
+          </div>
+        </div>
+
+        <form class="form-body" id="case-form" autocomplete="off" novalidate>
+          <div class="form-grid">
+            <div class="field">
+              <label for="request-number">رقم الطلب</label>
+              <input id="request-number" name="requestNumber" class="control" type="text" dir="auto" placeholder="مثال: 12345 أو DP-12345" spellcheck="false" maxlength="120">
+            </div>
+            <div class="field">
+              <label for="workshop">الورشة</label>
+              <input id="workshop" name="workshop" class="control" type="text" list="workshops" placeholder="اختر أو اكتب اسم الورشة" maxlength="160">
+              <datalist id="workshops">
+                <option value="البصرة"></option>
+                <option value="الناصرية"></option>
+                <option value="العمارة (ميسان)"></option>
+                <option value="الزبير"></option>
+                <option value="سوق الشيوخ"></option>
+                <option value="أبو الخصيب"></option>
+                <option value="القرنة"></option>
+              </datalist>
+            </div>
+            <div class="field">
+              <label for="device-model">موديل الجهاز</label>
+              <input id="device-model" name="deviceModel" class="control" type="text" dir="auto" placeholder="مثال: VAC-2750" spellcheck="false" maxlength="160">
+            </div>
+            <div class="field">
+              <label for="warranty">نوع الضمان</label>
+              <select id="warranty" name="warranty" class="control">
+                <option value="">اختر نوع الضمان</option>
+                <option value="ضمان">ضمان</option>
+                <option value="خارج الضمان">خارج الضمان</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label for="parts">قطع الغيار المطلوبة</label>
+              <textarea id="parts" name="parts" class="control" placeholder="اكتب أسماء قطع الغيار المطلوبة أو: لا يحتاج إلى قطع غيار"></textarea>
+            </div>
+            <div class="field full">
+              <label for="parts-status">حالة توفر القطع</label>
+              <select id="parts-status" name="partsStatus" class="control">
+                <option value="">اختر حالة توفر قطع الغيار</option>
+                <option value="متوفرة">متوفرة</option>
+                <option value="غير متوفرة">غير متوفرة</option>
+                <option value="تم طلبها">تم طلبها</option>
+                <option value="بانتظار وصولها">بانتظار وصولها</option>
+                <option value="متوفرة جزئياً">متوفرة جزئياً</option>
+                <option value="وصلت قطع غير مطابقة">وصلت قطع غير مطابقة</option>
+                <option value="لا يحتاج إلى قطع غيار">لا يحتاج إلى قطع غيار</option>
+                <option value="other">حالة أخرى (كتابة يدوية)</option>
+              </select>
+              <div id="custom-status-wrap" hidden style="margin-top:10px">
+                <label for="custom-status">اكتب حالة توفر القطع</label>
+                <input id="custom-status" name="customStatus" class="control" type="text" maxlength="200" placeholder="اكتب الحالة هنا">
+              </div>
+            </div>
+            <div class="field full">
+              <label for="notes">ملاحظات أخرى <span class="optional">اختياري</span></label>
+              <textarea id="notes" name="notes" class="control" placeholder="أضف تفاصيل العطل أو الإجراء المتخذ أو سبب التأخير، إن وجدت."></textarea>
+            </div>
+          </div>
+          <div class="form-foot">
+            <span class="progress">البيانات الأساسية المكتملة: <strong id="completed-count">0 من 6</strong></span>
+            <button type="button" class="reset" id="reset-btn">مسح الحقول</button>
+          </div>
+        </form>
+      </section>
+
+      <aside class="preview-panel" aria-label="الملاحظة الناتجة">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>النص الجاهز للنسخ</h2>
+            <p>يتحدث تلقائياً مع كل تعديل في الحقول.</p>
+          </div>
+          <div class="preview-wrap">
+            <div class="preview-label">
+              <span>معاينة الملاحظة</span>
+              <span class="live-tag">تحديث مباشر</span>
+            </div>
+            <div class="preview-text empty" id="output" role="region" aria-label="معاينة النص" aria-live="polite">ابدأ بملء الحقول لعرض النص هنا.</div>
+            <button type="button" class="copy-btn" id="copy-btn" disabled>نسخ النص الكامل</button>
+            <p class="copy-hint">سيتم نسخ النص العربي فقط، دون أي تنسيق أو رموز إضافية.</p>
+          </div>
+        </section>
+        <div class="privacy">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>تعمل الصفحة داخل المتصفح فقط، ولا ترسل بيانات الحالات إلى أي خادم. لا يتم حفظ البيانات تلقائياً؛ انسخ الملاحظة قبل مغادرة الصفحة.</span>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="foot"><div class="wrap">NEWAL · نموذج مساعد لتوحيد ملاحظات حالات الصيانة</div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      'use strict';
+      const form = document.getElementById('case-form');
+      const fields = {
+        requestNumber: document.getElementById('request-number'),
+        workshop: document.getElementById('workshop'),
+        deviceModel: document.getElementById('device-model'),
+        warranty: document.getElementById('warranty'),
+        parts: document.getElementById('parts'),
+        partsStatus: document.getElementById('parts-status'),
+        customStatus: document.getElementById('custom-status'),
+        notes: document.getElementById('notes')
+      };
+      const customStatusWrap = document.getElementById('custom-status-wrap');
+      const output = document.getElementById('output');
+      const copyBtn = document.getElementById('copy-btn');
+      const resetBtn = document.getElementById('reset-btn');
+      const completedCount = document.getElementById('completed-count');
+      const toast = document.getElementById('toast');
+      let noteText = '';
+      let toastTimer;
+      let copyTimer;
+
+      function normalize(value) { return String(value || '').trim(); }
+      function currentValues() {
+        const v = {};
+        Object.keys(fields).forEach(key => { v[key] = normalize(fields[key].value); });
+        v.partsStatus = v.partsStatus === 'other' ? v.customStatus : v.partsStatus;
+        return v;
+      }
+      function line(label, value) { return `${label}: ${value || 'غير محدد'}`; }
+      function makeNote(v) {
+        return [
+          line('رقم الطلب', v.requestNumber),
+          line('الورشة', v.workshop),
+          line('موديل الجهاز', v.deviceModel),
+          line('نوع الضمان', v.warranty),
+          line('قطع الغيار المطلوبة', v.parts),
+          line('حالة توفر القطع', v.partsStatus),
+          line('ملاحظات أخرى', v.notes || 'لم تُضف ملاحظات')
+        ].join('\n');
+      }
+      function refresh() {
+        customStatusWrap.hidden = fields.partsStatus.value !== 'other';
+        const v = currentValues();
+        const keys = ['requestNumber', 'workshop', 'deviceModel', 'warranty', 'parts', 'partsStatus'];
+        const completed = keys.filter(key => Boolean(v[key])).length;
+        const anyValue = completed > 0 || Boolean(v.notes);
+        completedCount.textContent = `${completed} من 6`;
+        noteText = anyValue ? makeNote(v) : '';
+        output.textContent = noteText || 'ابدأ بملء الحقول لعرض النص هنا.';
+        output.classList.toggle('empty', !noteText);
+        copyBtn.disabled = !noteText;
+      }
+      function showToast(message, success = true) {
+        clearTimeout(toastTimer);
+        toast.textContent = message;
+        toast.style.color = success ? 'var(--success)' : '#a33d32';
+        toast.classList.add('visible');
+        toastTimer = setTimeout(() => toast.classList.remove('visible'), 2600);
+      }
+      async function copyPlainText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+          return;
+        }
+        const helper = document.createElement('textarea');
+        helper.value = text;
+        helper.setAttribute('readonly', '');
+        helper.style.position = 'fixed';
+        helper.style.opacity = '0';
+        helper.style.right = '-9999px';
+        document.body.appendChild(helper);
+        helper.focus();
+        helper.select();
+        let successful = false;
+        try { successful = document.execCommand('copy'); }
+        finally { helper.remove(); }
+        if (!successful) throw new Error('تعذر النسخ');
+      }
+      form.addEventListener('input', refresh);
+      form.addEventListener('change', refresh);
+      form.addEventListener('submit', event => event.preventDefault());
+      copyBtn.addEventListener('click', async () => {
+        if (!noteText) return;
+        try {
+          await copyPlainText(noteText);
+          clearTimeout(copyTimer);
+          copyBtn.textContent = 'تم نسخ النص بنجاح';
+          copyBtn.classList.add('copied');
+          showToast('تم نسخ الملاحظة، ويمكنك لصقها في الحالة.');
+          copyTimer = setTimeout(() => {
+            copyBtn.textContent = 'نسخ النص الكامل';
+            copyBtn.classList.remove('copied');
+          }, 2400);
+        } catch (error) {
+          showToast('تعذر النسخ التلقائي. يمكنك تحديد النص ونسخه يدوياً.', false);
+        }
+      });
+      resetBtn.addEventListener('click', () => {
+        const v = currentValues();
+        const hasData = Object.values(v).some(Boolean);
+        if (hasData && !window.confirm('هل تريد مسح جميع البيانات المدخلة؟')) return;
+        form.reset();
+        fields.customStatus.value = '';
+        refresh();
+        fields.requestNumber.focus();
+        showToast('تم مسح الحقول.');
+      });
+      refresh();
+    })();
+  </script>
+</body>
+</html>

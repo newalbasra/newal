@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f9fc">
+  <meta name="description" content="مرجع موحد لملاحظات حالات الصيانة بالعربية والإنجليزية، مع إمكانية البحث والنسخ السريع.">
+  <meta property="og:title" content="ملاحظات حالات الصيانة | Service Case Notes">
+  <meta property="og:description" content="9 ready-to-copy service case notes in Arabic and English.">
+  <title>ملاحظات حالات الصيانة | Service Case Notes</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f9fc;
+      --surface: #fff;
+      --text: #17243b;
+      --muted: #62728a;
+      --line: #e3e9f1;
+      --blue: #2462bb;
+      --blue-dark: #154a99;
+      --blue-light: #edf4ff;
+      --green: #10744b;
+      --shadow: 0 5px 24px rgba(27, 51, 92, .042);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Tahoma, Arial, system-ui, sans-serif; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible { outline: 3px solid #82b3ff; outline-offset: 2px; }
+    .wrap { width: min(1160px, calc(100% - 36px)); margin-inline: auto; }
+    header { background: #fff; border-bottom: 1px solid var(--line); }
+    .topbar { display: flex; align-items: center; gap: 12px; min-height: 76px; }
+    .monogram { width: 43px; height: 43px; flex: 0 0 43px; display: grid; place-items: center; border-radius: 12px; background: #173d78; color: #fff; font: 700 25px/1 Arial, sans-serif; }
+    .brand strong { display: block; letter-spacing: .4px; font-family: Arial, sans-serif; font-size: 17px; line-height: 1.25; }
+    .brand small { display: block; color: var(--muted); font-size: 11px; margin-top: 1px; }
+    .header-label { margin-inline-start: auto; font-size: 12px; font-weight: 700; color: #416284; border: 1px solid var(--line); background: var(--bg); border-radius: 100px; padding: 5px 12px; }
+    .hero { padding: 40px 0 20px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 7px; padding: 5px 12px; border-radius: 100px; background: var(--blue-light); color: var(--blue-dark); font-weight: 700; font-size: 12px; }
+    .eyebrow::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--blue); }
+    h1 { font-size: clamp(26px, 4vw, 37px); letter-spacing: -.7px; margin: 14px 0 5px; line-height: 1.45; }
+    .subtitle { color: var(--muted); margin: 0; font-size: 15px; max-width: 730px; }
+    .toolbar { padding: 16px; background: #fff; border: 1px solid var(--line); border-radius: 18px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; box-shadow: var(--shadow); margin: 21px 0 14px; }
+    .search { position: relative; flex: 1 1 260px; }
+    .search svg { width: 19px; height: 19px; position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: #8492a5; pointer-events: none; }
+    .search input { width: 100%; height: 44px; border: 1px solid var(--line); border-radius: 10px; background: #fafcff; padding: 0 43px 0 12px; color: var(--text); font-size: 13px; outline-offset: 2px; }
+    .search input::placeholder { color: #8290a4; }
+    .segmented { display: flex; align-items: center; gap: 3px; background: #f1f4f8; padding: 4px; border-radius: 11px; direction: rtl; }
+    .segmented button { white-space: nowrap; font-size: 12px; color: #576a84; font-weight: 700; background: transparent; border: 0; border-radius: 8px; padding: 8px 12px; min-height: 36px; }
+    .segmented button[aria-pressed="true"] { color: var(--blue-dark); background: #fff; box-shadow: 0 1px 5px rgba(23, 40, 75, .1); }
+    .action { border: 1px solid var(--line); background: #fff; color: #425873; border-radius: 10px; height: 43px; padding: 0 14px; font-size: 12px; font-weight: 700; white-space: nowrap; transition: background .15s, border-color .15s; }
+    .action:hover { background: #f4f8ff; border-color: #c4d7f2; }
+    .primary-action { background: var(--blue); color: white; border-color: var(--blue); }
+    .primary-action:hover { background: var(--blue-dark); border-color: var(--blue-dark); }
+    .below-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; color: var(--muted); font-size: 12px; padding: 0 3px 16px; }
+    .below-toolbar strong { color: var(--text); }
+    .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 17px; padding-bottom: 26px; align-items: stretch; }
+    .case-card { background: var(--surface); border: 1px solid var(--line); border-radius: 17px; padding: 21px; box-shadow: var(--shadow); min-width: 0; }
+    .card-head { display: flex; align-items: flex-start; gap: 12px; padding-bottom: 15px; border-bottom: 1px solid #edf0f5; }
+    .number { background: var(--blue-light); color: var(--blue-dark); border-radius: 10px; width: 35px; height: 35px; flex: 0 0 35px; font: 700 14px/35px Arial, sans-serif; text-align: center; }
+    h2 { font-size: 16px; margin: 2px 0 2px; line-height: 1.6; letter-spacing: -.2px; }
+    .en-title { color: var(--muted); font: 12px/1.5 Arial, sans-serif; direction: ltr; text-align: right; }
+    .note { padding: 14px 0 0; }
+    .note + .note { border-top: 1px dashed #e5eaf1; margin-top: 13px; }
+    .note-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .lang-tag { display: inline-flex; align-items: center; background: #f1f5fa; border: 1px solid #e5ebf2; border-radius: 6px; font-size: 10px; font-weight: 700; padding: 2px 8px; color: #667891; direction: ltr; }
+    .copy { border: 1px solid #cfddf0; color: var(--blue-dark); background: #f7faff; border-radius: 8px; font-weight: 700; font-size: 11px; padding: 5px 11px; min-height: 30px; transition: .15s; }
+    .copy:hover { background: var(--blue-light); border-color: #a9c6ea; }
+    .copy.copied { color: var(--green); background: #effaf4; border-color: #bde7ce; }
+    .note-text { margin: 0; font-size: 13px; line-height: 1.9; color: #34465f; white-space: normal; overflow-wrap: anywhere; }
+    .en .note-text { font-family: Arial, system-ui, sans-serif; font-size: 13px; line-height: 1.7; text-align: left; direction: ltr; }
+    .dp-area { border-top: 1px solid #edf0f5; margin-top: 15px; padding-top: 13px; }
+    .dp-area label { display: block; margin-bottom: 5px; color: var(--muted); font-size: 11px; font-weight: 700; }
+    .dp-area input { display: block; width: 100%; height: 41px; padding: 0 12px; border: 1px solid var(--line); border-radius: 9px; color: var(--text); direction: ltr; text-align: left; font-family: Arial, sans-serif; font-size: 13px; background: #fbfcff; }
+    .dp-area small { display: block; color: var(--muted); margin-top: 5px; font-size: 10px; }
+    [data-mode="ar"] .note.en, [data-mode="en"] .note.ar { display: none; }
+    [data-mode="ar"] .note + .note, [data-mode="en"] .note + .note { border: 0; margin-top: 0; }
+    [hidden] { display: none !important; }
+    .empty { text-align: center; border: 1px dashed #c8d6e8; background: #fff; padding: 40px 15px; border-radius: 16px; margin-bottom: 28px; color: var(--muted); }
+    .empty strong { display: block; color: var(--text); font-size: 18px; margin-bottom: 6px; }
+    .guidance { margin-bottom: 29px; border: 1px solid #dce9fa; border-radius: 14px; background: #f0f6ff; display: flex; align-items: flex-start; gap: 12px; padding: 15px 18px; color: #355577; font-size: 12px; }
+    .guidance .symbol { font-size: 18px; font-weight: 700; flex: 0 0 21px; background: #dceaff; border-radius: 50%; width: 21px; height: 21px; line-height: 21px; text-align: center; color: var(--blue-dark); }
+    footer { border-top: 1px solid var(--line); padding: 23px 0 34px; color: #8390a3; text-align: center; font-size: 11px; }
+    .toast { position: fixed; z-index: 999; bottom: max(22px, env(safe-area-inset-bottom)); right: 50%; transform: translateX(50%) translateY(20px); opacity: 0; pointer-events: none; background: #163b70; color: #fff; padding: 11px 20px; border-radius: 10px; font-size: 13px; font-weight: 700; box-shadow: 0 12px 40px rgba(20, 50, 89, .24); transition: opacity .17s, transform .17s; min-width: 160px; text-align: center; }
+    .toast.show { opacity: 1; transform: translateX(50%) translateY(0); }
+    @media (max-width: 800px) { .cards { grid-template-columns: 1fr; } .hero { padding-top: 29px; } }
+    @media (max-width: 520px) { .wrap { width: min(100% - 24px, 1160px); } .header-label { font-size: 10px; padding-inline: 9px; } .topbar { min-height: 68px; } .hero { padding-top: 24px; } h1 { font-size: 26px; } .toolbar { padding: 12px; gap: 9px; } .search { flex-basis: 100%; } .segmented { flex: 1 1 auto; justify-content: space-between; } .segmented button { flex: 1 1 auto; padding-inline: 8px; } .action { flex: 1 1 auto; padding-inline: 9px; } .case-card { padding: 16px; } .below-toolbar { padding-bottom: 13px; } }
+    @media print { @page { size: A4; margin: 13mm; } body { background: white; } .wrap { width: 100%; } header { border: 0; } .header-label, .toolbar, .below-toolbar, .copy, .dp-area, .toast, .guidance, footer { display: none !important; } .hero { padding: 10px 0 18px; } h1 { font-size: 23px; } .cards { display: block; } .case-card { box-shadow: none; border: 1px solid #d3dce8; margin-bottom: 10px; padding: 12px 14px; break-inside: avoid; page-break-inside: avoid; } .note { padding-top: 10px; } .note + .note { margin-top: 9px; } .note-text { font-size: 11px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0s !important; } }
+  </style>
+</head>
+<body data-mode="both">
+  <header>
+    <div class="wrap topbar">
+      <div class="monogram" aria-hidden="true">N</div>
+      <div class="brand"><strong>NEWAL</strong><small>Service Operations · عمليات الصيانة</small></div>
+      <div class="header-label">دليل موظفي الورش</div>
+    </div>
+  </header>
+  <main class="wrap">
+    <section class="hero" aria-labelledby="page-title">
+      <span class="eyebrow">مرجع موحد لحالات الصيانة</span>
+      <h1 id="page-title">ملاحظات حالات الصيانة</h1>
+      <p class="subtitle">9 صيغ مختصرة بالعربية والإنجليزية، جاهزة للنسخ والإضافة إلى ملاحظات الحالات (Cases) حسب حالة الجهاز.</p>
+    </section>
+    <section class="toolbar" aria-label="أدوات البحث والنسخ">
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+        <input id="search" type="search" placeholder="ابحث عن حالة أو نص... / Search cases" aria-label="البحث في حالات الصيانة" autocomplete="off">
+      </div>
+      <div class="segmented" role="group" aria-label="لغة عرض النصوص">
+        <button type="button" data-lang="both" aria-pressed="true">اللغتان</button>
+        <button type="button" data-lang="ar" aria-pressed="false">العربية</button>
+        <button type="button" data-lang="en" aria-pressed="false">English</button>
+      </div>
+      <button id="copy-all" type="button" class="action primary-action">نسخ جميع النصوص</button>
+      <button id="print" type="button" class="action">طباعة</button>
+    </section>
+    <div class="below-toolbar"><span><strong id="result-count">9</strong> حالات متاحة</span><span>اختر النص المناسب ثم اضغط «نسخ»</span></div>
+    <section id="cards" class="cards" aria-label="النصوص الجاهزة">
+      <article class="case-card" data-case="1">
+        <div class="card-head"><span class="number">01</span><div><h2 class="card-title">طلب B2B عبر Paperwork</h2><div class="en-title">B2B Paperwork Request</div></div></div>
+        <div class="note ar" lang="ar" dir="rtl"><div class="note-head"><span class="lang-tag">AR</span><button type="button" class="copy" data-copy="ar">نسخ العربي</button></div><p class="note-text">رقم طلب Paperwork: <b class="dp-code" dir="ltr">DP-#####</b></p></div>
+        <div class="note en" lang="en" dir="ltr"><div class="note-head"><span class="lang-tag">EN</span><button type="button" class="copy" data-copy="en">Copy English</button></div><p class="note-text">Paperwork Request: <b class="dp-code">DP-#####</b></p></div>
+        <div class="dp-area"><label for="dp-number">رقم الطلب (اختياري) / Paperwork ID</label><input id="dp-number" placeholder="DP-12345" spellcheck="false" maxlength="50" aria-describedby="dp-help"><small id="dp-help">أدخل رقم DP الوارد في البريد وسيُحدّث النص تلقائياً.</small></div>
+      </article>
+      <article class="case-card" data-case="2">
+        <div class="card-head"><span class="number">02</span><div><h2 class="card-title">الحاجة إلى قطع غيار إضافية</h2><div class="en-title">Additional Spare Parts Required</div></div></div>
+        <div class="note ar" lang="ar" dir="rtl"><div class="note-head"><span class="lang-tag">AR</span><button type="button" class="copy" data-copy="ar">نسخ العربي</button></div><p class="note-text">بعد استلام قطعة الغيار الأولى، تبيّن أن الجهاز يحتاج إلى قطع غيار إضافية لاستكمال الإصلاح.</p></div>
+        <div class="note en" lang="en" dir="ltr"><div class="note-head"><span class="lang-tag">EN</span><button type="button" class="copy" data-copy="en">Copy English</button></div><p class="note-text">Additional spare parts are required to complete the repair after receiving the initial part.</p></div>
+      </article>
+      <article class="case-card" data-case="3">
+        <div class="card-head"><span class="number">03</span><div><h2 class="card-title">الإصلاح يتطلب وقتاً إضافياً</h2><div class="en-title">Additional Repair Time Required</div></div></div>
+        <div class="note ar" lang="ar" dir="rtl"><div class="note-head"><span class="lang-tag">AR</span><button type="button" class="copy" data-copy="ar">نسخ العربي</button></div><p class="note-text">الجهاز يعاني من عطل معقد يتطلب وقتاً إضافياً لإكمال الإصلاح.</p></div>
+        <div class="note en" lang="en" dir="ltr"><div class="note-head"><span class="lang-tag">EN</span><button type="button" class="copy" data-copy="en">Copy English</button></div><p class="note-text">The device has a complex fault requiring additional repair time.</p></div>
+      </article>
+      <article class="case-card" data-case="4">
+        <div class="card-head"><span class="number">04</span><div><h2 class="card-title">عطل مصنعي غير قابل للإصلاح</h2><div class="en-title">Irreparable Manufacturing Defect</div></div></div>
+        <div class="note ar" lang="ar" dir="rtl"><div class="note-head"><span class="lang-tag">AR</span><button type="button" class="copy" data-copy="ar">نسخ العربي</button></div><p class="note-text">تبيّن بعد الفحص أن الجهاز يعاني من عطل مصنعي غير قابل للإصلاح.</p></div>
+        <div class="note en" lang="en" dir="ltr"><div class="note-head"><span class="lang-tag">EN</span><button type="button" class="copy" data-copy="en">Copy English</button></div><p class="note-text">Inspection confirmed an irreparable manufacturing defect.</p></div>
+      </article>
+      <article class="case-card" data-case="5">
+        <div class="card-head"><span class="number">05</span><div><h2 class="card-title">وصول قطع غيار غير مطابقة</h2><div class="en-title">Incorrect Spare Parts Received</div></div></div>
+        <div class="note ar" lang="ar" dir="rtl"><div class="note-head"><span class="lang-tag">AR</span><button type="button" class="copy" data-copy="ar">نسخ العربي</button></div><p class="note-text">قطع الغيار المستلمة غير مطابقة للمطلوب، وبانتظار توفير القطع الصحيحة.</p></div>
+        <div class="note en" lang="en" dir="ltr"><div class="note-head"><span class="lang-tag">EN</span><button type="button" class="copy" data-copy="en">Copy English</button></div><p class="note-text">Incorrect spare parts were received. Awaiting the correct parts.</p></div>
+      </article>
+      <article class="case-card" data-case="6">
+        <div class="card-head"><span class="number">06</span><div><h2 class="card-title">سوء استخدام من قبل العميل</h2><div class="en-title">Customer Misuse</div></div></div>
+        <div class="note ar" lang="ar" dir="rtl"><div class="note-head"><span class="lang-tag">AR</span><button type="button" class="copy" data-copy="ar">نسخ العربي</button></div><p class="note-text">تبيّن أن العطل ناتج عن سوء استخدام العميل للجهاز.</p></div>
+        <div class="note en" lang="en" dir="ltr"><div class="note-head"><span class="lang-tag">EN</span><button type="button" class="copy" data-copy="en">Copy English</button></div><p class="note-text">The fault was caused by customer misuse.</p></div>
+      </article>
+      <article class="case-card" data-case="7">
+        <div class="card-head"><span class="number">07</span><div><h2 class="card-title">رفض استلام الجهاز بعد إصلاحه</h2><div class="en-title">Collection Refused After Repair</div></div></div>
+        <div class="note ar" lang="ar" dir="rtl"><div class="note-head"><span class="lang-tag">AR</span><button type="button" class="copy" data-copy="ar">نسخ العربي</button></div><p class="note-text">تم إصلاح الجهاز وفحصه بنجاح، إلا أن العميل/الوكيل رفض استلامه.</p></div>
+        <div class="note en" lang="en" dir="ltr"><div class="note-head"><span class="lang-tag">EN</span><button type="button" class="copy" data-copy="en">Copy English</button></div><p class="note-text">The device was repaired and tested successfully, but the customer/dealer refused collection.</p></div>
+      </article>
+      <article class="case-card" data-case="8">
+        <div class="card-head"><span class="number">08</span><div><h2 class="card-title">عدم توفر قطع الغيار ضمن الضمان</h2><div class="en-title">Warranty Parts Unavailable</div></div></div>
+        <div class="note ar" lang="ar" dir="rtl"><div class="note-head"><span class="lang-tag">AR</span><button type="button" class="copy" data-copy="ar">نسخ العربي</button></div><p class="note-text">الجهاز ضمن الضمان، لكن قطع الغيار المطلوبة غير متوفرة حالياً.</p></div>
+        <div class="note en" lang="en" dir="ltr"><div class="note-head"><span class="lang-tag">EN</span><button type="button" class="copy" data-copy="en">Copy English</button></div><p class="note-text">The device is under warranty, but the required spare parts are currently unavailable.</p></div>
+      </article>
+      <article class="case-card" data-case="9">
+        <div class="card-head"><span class="number">09</span><div><h2 class="card-title">منتج مباع يحتوي على كسر وقطع الغيار غير متوفرة</h2><div class="en-title">Sold Product with Damage – Spare Parts Unavailable</div></div></div>
+        <div class="note ar" lang="ar" dir="rtl"><div class="note-head"><span class="lang-tag">AR</span><button type="button" class="copy" data-copy="ar">نسخ العربي</button></div><p class="note-text">المنتج مباع ويحتوي على كسر، وقطع الغيار المطلوبة لإصلاحه غير متوفرة حالياً.</p></div>
+        <div class="note en" lang="en" dir="ltr"><div class="note-head"><span class="lang-tag">EN</span><button type="button" class="copy" data-copy="en">Copy English</button></div><p class="note-text">The sold product has physical damage, and the required spare parts are currently unavailable.</p></div>
+      </article>
+    </section>
+    <div class="empty" id="empty" hidden><strong>لا توجد نتائج مطابقة</strong><span>جرّب البحث بكلمة أخرى أو امسح النص من خانة البحث.</span></div>
+    <aside class="guidance"><span class="symbol" aria-hidden="true">i</span><span>يُرجى استخدام النص الذي يطابق حالة الجهاز الفعلية فقط، مع تحديث الملاحظات عند تغيّر الحالة. بالنسبة إلى طلبات B2B، استخدم رقم DP الحقيقي الوارد في بريد Paperwork.</span></aside>
+  </main>
+  <footer><div class="wrap">NEWAL · Service Operations &nbsp;|&nbsp; Internal reference for workshop teams</div></footer>
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  <script>
+    (() => {
+      'use strict';
+      const cards = Array.from(document.querySelectorAll('.case-card'));
+      const search = document.querySelector('#search');
+      const count = document.querySelector('#result-count');
+      const empty = document.querySelector('#empty');
+      const toast = document.querySelector('#toast');
+      let toastTimeout;
+      const showToast = message => {
+        toast.textContent = message;
+        toast.classList.add('show');
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => toast.classList.remove('show'), 2300);
+      };
+      const normalize = value => String(value).toLocaleLowerCase().replace(/[\u064b-\u065f\u0670]/g, '').replace(/\s+/g, ' ').trim();
+      const updateResults = () => {
+        const query = normalize(search.value);
+        let visible = 0;
+        cards.forEach(card => {
+          const searchable = normalize(card.textContent);
+          const matches = !query || searchable.includes(query);
+          card.hidden = !matches;
+          if (matches) visible++;
+        });
+        count.textContent = String(visible);
+        empty.hidden = visible !== 0;
+      };
+      const copyText = async content => {
+        if (navigator.clipboard && window.isSecureContext) {
+          try { await navigator.clipboard.writeText(content); return true; } catch (_) { /* fallback below */ }
+        }
+        const textarea = document.createElement('textarea');
+        textarea.value = content;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        let success = false;
+        try { success = document.execCommand('copy'); } catch (_) { success = false; }
+        textarea.remove();
+        return success;
+      };
+      search.addEventListener('input', updateResults);
+      document.querySelectorAll('[data-lang]').forEach(button => {
+        button.addEventListener('click', () => {
+          document.body.dataset.mode = button.dataset.lang;
+          document.querySelectorAll('[data-lang]').forEach(choice => choice.setAttribute('aria-pressed', String(choice === button)));
+        });
+      });
+      document.querySelectorAll('button[data-copy]').forEach(button => {
+        button.addEventListener('click', async () => {
+          const paragraph = button.closest('.note').querySelector('.note-text');
+          const success = await copyText(paragraph.textContent.trim());
+          if (!success) { showToast('تعذّر النسخ، يُرجى تحديد النص يدوياً'); return; }
+          const original = button.textContent;
+          button.textContent = '✓ تم النسخ';
+          button.classList.add('copied');
+          showToast('تم نسخ النص بنجاح');
+          setTimeout(() => { button.textContent = original; button.classList.remove('copied'); }, 1800);
+        });
+      });
+      document.querySelector('#dp-number').addEventListener('input', event => {
+        const raw = event.target.value.trim();
+        const reference = raw ? (raw.toUpperCase().startsWith('DP-') ? raw : 'DP-' + raw) : 'DP-#####';
+        document.querySelectorAll('.dp-code').forEach(el => { el.textContent = reference; });
+      });
+      document.querySelector('#copy-all').addEventListener('click', async () => {
+        const mode = document.body.dataset.mode;
+        const chunks = cards.filter(card => !card.hidden).map(card => {
+          const parts = [card.dataset.case + '. ' + card.querySelector('.card-title').textContent.trim()];
+          if (mode !== 'en') parts.push('AR: ' + card.querySelector('.note.ar .note-text').textContent.trim());
+          if (mode !== 'ar') parts.push('EN: ' + card.querySelector('.note.en .note-text').textContent.trim());
+          return parts.join('\n');
+        });
+        if (!chunks.length) { showToast('لا توجد نصوص لنسخها'); return; }
+        showToast((await copyText(chunks.join('\n\n'))) ? 'تم نسخ جميع النصوص المعروضة' : 'تعذّر النسخ، حاول مرة أخرى');
+      });
+      document.querySelector('#print').addEventListener('click', () => window.print());
+    })();
+  </script>
+</body>
+</html>
