@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#122741">
+  <title>NEWAL | نموذج سحب منتجات ذات Paperwork مسبق</title>
+  <style>
+    :root {
+      --navy: #142b47;
+      --navy-deep: #0c1c31;
+      --blue: #245789;
+      --ink: #182639;
+      --muted: #66788b;
+      --line: #dce5ee;
+      --surface: #ffffff;
+      --background: #eff3f8;
+      --wash: #f6f9fc;
+      --accent: #20a28f;
+      --danger: #ba3d48;
+      --shadow: 0 20px 55px rgba(15, 38, 63, .08);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; background: var(--background); color: var(--ink); font-family: Tahoma, "Segoe UI", Arial, sans-serif; font-size: 14px; line-height: 1.55; }
+    button, input, textarea { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid rgba(32,162,143,.28); outline-offset: 2px; }
+    .topbar { background: var(--navy-deep); color: white; }
+    .topbar-inner { max-width: 1040px; margin: auto; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .top-brand { font-family: Arial, sans-serif; font-size: 20px; letter-spacing: 2px; font-weight: 900; }
+    .top-subtitle { color: #b5c6d9; font-size: 12px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; }
+    .btn { border: 1px solid transparent; border-radius: 10px; padding: 10px 15px; min-height: 41px; background: white; color: var(--navy); font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 7px; transition: background .15s, transform .15s; }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { background: var(--accent); color: #092b29; }
+    .btn-primary:hover { background: #42bbaa; }
+    .btn-dark { background: #234362; border-color: #42607d; color: #fff; }
+    .btn-dark:hover { background: #2d5277; }
+    .btn-ghost { background: transparent; border-color: #7d90a7; color: #fff; }
+    .btn-ghost:hover { background: #284260; }
+    .page-shell { max-width: 1040px; padding: 24px 20px 48px; margin: 0 auto; }
+    .paper { background: var(--surface); border: 1px solid var(--line); border-radius: 15px; box-shadow: var(--shadow); padding: 30px 34px 28px; overflow: hidden; }
+    .doc-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; border-bottom: 3px solid var(--navy); padding-bottom: 18px; }
+    .doc-title h1 { font-size: 23px; line-height: 1.55; margin: 0 0 2px; font-weight: 800; color: var(--navy-deep); }
+    .doc-title p { margin: 0; color: var(--muted); font-size: 12px; }
+    .brand-block { direction: ltr; text-align: left; flex-shrink: 0; }
+    .brand-block strong { font-family: Arial, sans-serif; display: block; font-size: 29px; font-weight: 900; line-height: 1.2; letter-spacing: 2px; color: var(--navy); }
+    .brand-block small { display: block; font-family: Arial, sans-serif; letter-spacing: 1px; color: var(--muted); font-size: 9px; text-transform: uppercase; }
+    .intro { background: var(--wash); border: 1px solid var(--line); border-right: 4px solid var(--accent); border-radius: 9px; margin: 20px 0 25px; padding: 11px 14px; color: #3c5066; font-size: 12.5px; }
+    .section { margin-top: 24px; }
+    .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 13px; }
+    .section-heading h2 { margin: 0; font-size: 16px; color: var(--navy); }
+    .section-heading h2::before { content: ""; display: inline-block; width: 5px; height: 17px; border-radius: 3px; background: var(--accent); vertical-align: -3px; margin-left: 9px; }
+    .counter { display: inline-block; color: var(--blue); border: 1px solid #d8e5f2; background: #f1f7fd; font-size: 12px; padding: 5px 9px; border-radius: 20px; }
+    .grid { display: grid; gap: 14px; grid-template-columns: repeat(12, minmax(0, 1fr)); }
+    .field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+    .field > label { color: #475d74; font-weight: 700; font-size: 12px; }
+    .field .hint { font-size: 11px; font-weight: 400; color: #8592a1; }
+    .span-3 { grid-column: span 3; }
+    .span-4 { grid-column: span 4; }
+    .span-6 { grid-column: span 6; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
+    .inputwrap { min-width: 0; }
+    .inputwrap input, .inputwrap textarea { display: block; width: 100%; min-width: 0; background: #fff; border: 1px solid #cad7e5; border-radius: 8px; padding: 10px 11px; color: #192c40; min-height: 42px; }
+    .inputwrap input::placeholder, .inputwrap textarea::placeholder { color: #a0acb9; }
+    .inputwrap textarea { resize: vertical; min-height: 70px; }
+    .print-value { display: none; }
+    .products-scroll { width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+    .products-table { width: 100%; min-width: 800px; border-collapse: collapse; table-layout: fixed; }
+    .products-table th { background: var(--navy); color: white; font-size: 11.5px; padding: 11px 8px; font-weight: 700; text-align: right; border-left: 1px solid rgba(255,255,255,.13); }
+    .products-table th:last-child { border-left: none; }
+    .products-table td { border-bottom: 1px solid var(--line); border-left: 1px solid var(--line); padding: 8px 6px; vertical-align: top; }
+    .products-table tbody tr:last-child td { border-bottom: 0; }
+    .products-table td:last-child { border-left: 0; }
+    .products-table tbody tr:nth-child(even) { background: #f8fbfd; }
+    .products-table .inputwrap input { font-size: 12px; min-height: 39px; padding: 8px 7px; border-radius: 6px; }
+    .products-table input[type="number"] { text-align: center; }
+    .row-num { font-weight: 800; display: block; padding: 8px 0; text-align: center; color: var(--navy); }
+    .del-row { font-size: 18px; background: #fff0f1; border: 1px solid #f2d5d8; color: var(--danger); border-radius: 7px; width: 35px; height: 36px; }
+    .del-row:hover { background: #fbe0e3; }
+    .add-row { margin-top: 13px; background: #eaf7f4; border: 1px dashed #75bcaf; border-radius: 9px; color: #106757; padding: 10px 15px; font-weight: 800; }
+    .add-row:hover { background: #d9f0ec; }
+    .under-table { margin-top: 7px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 11px; color: var(--muted); }
+    .declaration { background: #f7f9fc; border: 1px solid var(--line); border-radius: 9px; padding: 14px 15px; margin-top: 25px; color: #2d4156; font-size: 12.5px; line-height: 1.95; }
+    .signatures { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+    .signature-card { border: 1px solid var(--line); border-radius: 11px; padding: 15px; min-width: 0; break-inside: avoid; }
+    .signature-title { font-weight: 800; color: var(--navy); margin-bottom: 10px; }
+    .signature-pad { position: relative; border: 1px dashed #a9b7c8; border-radius: 8px; overflow: hidden; background: linear-gradient(180deg, #fff, #fbfcfe); height: 132px; }
+    .signature-pad canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
+    .signature-placeholder { position: absolute; top: 50%; left: 0; width: 100%; text-align: center; transform: translateY(-50%); color: #b1bdcb; font-size: 12px; pointer-events: none; }
+    .signature-pad.has-ink .signature-placeholder { display: none; }
+    .signature-print { display: none; }
+    .sig-actions { margin-top: 8px; display: flex; justify-content: space-between; align-items: center; gap: 8px; color: var(--muted); font-size: 11px; }
+    .clear-sig { border: 0; color: var(--danger); background: transparent; font-size: 11px; font-weight: 800; padding: 3px 0; }
+    .sig-line { margin-top: 14px; }
+    .sig-line label { display: block; font-size: 11.5px; color: var(--muted); margin-bottom: 5px; }
+    .footer { text-align: center; border-top: 1px solid var(--line); margin-top: 25px; padding-top: 13px; font-size: 11px; color: var(--muted); }
+    .actions-bottom { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+    .actions-bottom .btn-primary { background: var(--navy); color: white; }
+    .actions-bottom .btn-primary:hover { background: #264363; }
+    .actions-bottom .btn-dark { background: #fff; color: var(--navy); border-color: #bfcedd; }
+    .actions-bottom .btn-dark:hover { background: #eef5fc; }
+    .actions-bottom .btn-ghost { color: var(--danger); border-color: #e3b4b9; }
+    .note { text-align: center; color: var(--muted); font-size: 11px; max-width: 650px; margin: 13px auto 0; }
+    .toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(15px); padding: 11px 19px; border-radius: 10px; background: #173a52; color: #fff; font-size: 13px; box-shadow: 0 10px 30px #12274135; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 20; max-width: calc(100% - 30px); text-align: center; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    @media (max-width: 760px) {
+      .page-shell { padding: 12px 10px 30px; }
+      .paper { padding: 19px 15px; border-radius: 10px; }
+      .doc-header { align-items: center; }
+      .doc-title h1 { font-size: 19px; }
+      .brand-block strong { font-size: 23px; }
+      .span-3, .span-4, .span-6, .span-8 { grid-column: span 12; }
+      .grid { gap: 11px; }
+      .signatures { grid-template-columns: 1fr; }
+      .topbar-inner { padding: 12px; }
+      .toolbar { width: 100%; }
+      .toolbar .btn { flex: 1; font-size: 11px; padding: 8px 7px; }
+    }
+    @page { size: A4; margin: 12mm; }
+    @media print {
+      html, body { margin: 0; padding: 0; background: white !important; font-size: 10.5pt; color: #111; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .topbar, .actions-bottom, .note, .add-row, .del-row, .sig-actions, .toast, .no-print { display: none !important; }
+      .page-shell { max-width: none; padding: 0; margin: 0; }
+      .paper { border: 0; box-shadow: none; padding: 0; border-radius: 0; overflow: visible; }
+      .doc-header { padding-bottom: 9px; border-bottom-width: 2px; }
+      .doc-title h1 { font-size: 17pt; }
+      .doc-title p { font-size: 8pt; }
+      .brand-block strong { font-size: 22pt; }
+      .intro { margin: 13px 0 16px; padding: 7px 10px; font-size: 9pt; }
+      .section { margin-top: 15px; }
+      .section-heading { margin-bottom: 8px; }
+      .section-heading h2 { font-size: 12pt; }
+      .counter { font-size: 9pt; padding: 2px 7px; }
+      .field { gap: 3px; }
+      .field > label { font-size: 8.5pt; }
+      .field .hint { display: none; }
+      .grid { gap: 9px 12px; }
+      .inputwrap input, .inputwrap textarea { display: none !important; }
+      .print-value { display: block !important; padding: 5px 6px; border: 1px solid #c9d4df; border-radius: 4px; min-height: 25px; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; font-size: 9pt; }
+      .products-scroll { border-radius: 0; overflow: visible; }
+      .products-table { min-width: 0; width: 100%; font-size: 8pt; }
+      .products-table thead { display: table-header-group; }
+      .products-table tr { break-inside: avoid; page-break-inside: avoid; }
+      .products-table th { padding: 6px 5px; font-size: 7.8pt; background: #142b47 !important; color: #fff !important; }
+      .products-table td { padding: 4px; }
+      .products-table .print-value { border: none; padding: 2px; font-size: 7.8pt; min-height: 20px; }
+      .products-table .row-num { padding: 2px 0; }
+      .products-table th:last-child, .products-table td:last-child { display: none; }
+      .under-table { font-size: 8pt; }
+      .declaration { background: #f7f9fc !important; margin-top: 15px; padding: 9px 11px; font-size: 9pt; break-inside: avoid; }
+      .signatures { margin-top: 12px; gap: 12px; }
+      .signature-card { padding: 10px; }
+      .signature-title { font-size: 10pt; margin-bottom: 7px; }
+      .signature-pad { display: none; }
+      .signature-print { display: flex !important; justify-content: center; align-items: center; height: 82px; width: 100%; border-bottom: 1px solid #6e7d8c; }
+      .signature-print img { display: block; width: 100%; height: 78px; object-fit: contain; }
+      .sig-line { margin-top: 8px; }
+      .sig-line label { font-size: 8pt; }
+      .sig-line .print-value { min-height: 23px; }
+      .footer { margin-top: 15px; padding-top: 9px; font-size: 8pt; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar no-print">
+    <div class="topbar-inner">
+      <div><span class="top-brand">NEWAL</span><span class="top-subtitle"> &nbsp; | &nbsp; نموذج طلب سحب المنتجات</span></div>
+      <nav class="toolbar" aria-label="إجراءات النموذج">
+        <button type="button" class="btn btn-dark" id="saveDraft">حفظ المسودة</button>
+        <button type="button" class="btn btn-ghost" id="restoreDraft">استعادة المسودة</button>
+        <button type="button" class="btn btn-primary" id="printTop">طباعة / PDF</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <article class="paper" aria-label="طلب سحب منتجات">
+      <div class="doc-header">
+        <div class="doc-title">
+          <h1>نموذج سحب منتجات من الوكيل</h1>
+          <p>خاص بالمنتجات التي لديها طلب Paperwork مسجّل مسبقاً</p>
+        </div>
+        <div class="brand-block"><strong>NEWAL</strong><small>Product collection form</small></div>
+      </div>
+
+      <div class="intro">يُستخدم هذا النموذج لتوثيق سحب منتج أو أكثر من الوكيل بواسطة سائق الشركة، مع تحديد رقم الـPaperwork لكل منتج وتوقيع طرفَي التسليم والاستلام.</div>
+
+      <section class="section">
+        <div class="section-heading"><h2>بيانات السحب</h2></div>
+        <div class="grid">
+          <div class="field span-4"><label for="pickupDate">تاريخ سحب المنتجات</label><div class="inputwrap"><input id="pickupDate" type="date"><div class="print-value"></div></div></div>
+          <div class="field span-4"><label for="pickupTime">وقت السحب</label><div class="inputwrap"><input id="pickupTime" type="time"><div class="print-value"></div></div></div>
+          <div class="field span-4"><label for="documentNumber">رقم النموذج <span class="hint">(اختياري)</span></label><div class="inputwrap"><input id="documentNumber" type="text" placeholder="رقم مرجعي داخلي"><div class="print-value"></div></div></div>
+          <div class="field span-6"><label for="dealerName">اسم الوكيل</label><div class="inputwrap"><input id="dealerName" type="text" placeholder="اسم الوكيل / المعرض" autocomplete="organization"><div class="print-value"></div></div></div>
+          <div class="field span-6"><label for="dealerPhone">رقم هاتف الوكيل</label><div class="inputwrap"><input id="dealerPhone" type="tel" inputmode="tel" dir="ltr" placeholder="07XXXXXXXXX" autocomplete="tel"><div class="print-value" dir="ltr" style="text-align:right"></div></div></div>
+          <div class="field span-8"><label for="dealerAddress">عنوان الوكيل</label><div class="inputwrap"><input id="dealerAddress" type="text" placeholder="المحافظة، المنطقة، الشارع، أقرب نقطة دالة" autocomplete="street-address"><div class="print-value"></div></div></div>
+          <div class="field span-4"><label for="driverName">اسم سائق الشركة</label><div class="inputwrap"><input id="driverName" type="text" placeholder="الاسم الكامل"><div class="print-value"></div></div></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <h2>المنتجات المطلوب سحبها</h2>
+          <span class="counter" id="itemsCounter" aria-live="polite">طلب واحد</span>
+        </div>
+        <div class="products-scroll" role="region" aria-label="جدول المنتجات - يمكن سحبه أفقياً على الهاتف" tabindex="0">
+          <table class="products-table">
+            <colgroup><col style="width:5%"><col style="width:20%"><col style="width:18%"><col style="width:19%"><col style="width:9%"><col style="width:23%"><col style="width:6%"></colgroup>
+            <thead><tr><th scope="col">ت</th><th scope="col">رقم Paperwork</th><th scope="col">موديل الجهاز</th><th scope="col">الرقم التسلسلي</th><th scope="col">الكمية</th><th scope="col">ملاحظات</th><th scope="col" class="no-print">حذف</th></tr></thead>
+            <tbody id="itemsBody"></tbody>
+          </table>
+        </div>
+        <button class="add-row no-print" id="addItem" type="button">＋ إضافة طلب / منتج آخر</button>
+        <div class="under-table"><span>كل سطر يمثل طلب Paperwork مستقلاً، ويمكن إضافة أي عدد من المنتجات.</span><strong id="totalQuantity">إجمالي الكمية: 1</strong></div>
+      </section>
+
+      <div class="declaration"><strong>إقرار التسليم والاستلام:</strong> نُقرّ نحن الموقّعين أدناه بأن المنتجات المدرجة في هذا النموذج قد سُحبت من موقع الوكيل، وسُلّمت إلى سائق شركة NEWAL. ويثبت توقيع الطرفين عملية التسليم والاستلام وفق التفاصيل الموضحة أعلاه.</div>
+
+      <section class="signatures" aria-label="التوقيعات">
+        <div class="signature-card">
+          <div class="signature-title">توقيع الوكيل (مُسلِّم المنتجات)</div>
+          <div class="signature-pad" id="dealerPad"><canvas id="dealerCanvas" aria-label="حقل توقيع الوكيل"></canvas><span class="signature-placeholder">وقّع هنا بالإصبع أو الماوس</span></div>
+          <div class="signature-print"><img id="dealerSigPrint" alt="توقيع الوكيل"></div>
+          <div class="sig-actions"><span>يمكن التوقيع إلكترونياً أو على الورقة بعد الطباعة</span><button type="button" class="clear-sig" id="clearDealer">مسح التوقيع</button></div>
+          <div class="sig-line field"><label for="dealerSigner">اسم الشخص الذي قام بالتسليم</label><div class="inputwrap"><input id="dealerSigner" type="text" placeholder="اسم ممثل الوكيل"><div class="print-value"></div></div></div>
+        </div>
+        <div class="signature-card">
+          <div class="signature-title">توقيع سائق الشركة (مُستلِم المنتجات)</div>
+          <div class="signature-pad" id="driverPad"><canvas id="driverCanvas" aria-label="حقل توقيع السائق"></canvas><span class="signature-placeholder">وقّع هنا بالإصبع أو الماوس</span></div>
+          <div class="signature-print"><img id="driverSigPrint" alt="توقيع السائق"></div>
+          <div class="sig-actions"><span>يمكن التوقيع إلكترونياً أو على الورقة بعد الطباعة</span><button type="button" class="clear-sig" id="clearDriver">مسح التوقيع</button></div>
+          <div class="sig-line field"><label for="driverSigner">اسم السائق الموقّع</label><div class="inputwrap"><input id="driverSigner" type="text" placeholder="اسم السائق"><div class="print-value"></div></div></div>
+        </div>
+      </section>
+
+      <footer class="footer">NEWAL &nbsp; | &nbsp; Product Collection / Paperwork Reference &nbsp; | &nbsp; نموذج توثيق سحب المنتجات من الوكلاء</footer>
+    </article>
+
+    <div class="actions-bottom no-print">
+      <button type="button" class="btn btn-primary" id="printBottom">طباعة أو حفظ بصيغة PDF</button>
+      <button type="button" class="btn btn-dark" id="saveBottom">حفظ المسودة</button>
+      <button type="button" class="btn btn-ghost" id="resetForm">نموذج جديد / مسح البيانات</button>
+    </div>
+    <p class="note no-print">الصفحة تعمل بدون قاعدة بيانات. عند اختيار «حفظ المسودة»، تُخزّن البيانات والتوقيعات في متصفح هذا الجهاز فقط؛ لا تُرسل إلى أي خادم. لطباعة PDF اختر «حفظ بتنسيق PDF» من نافذة الطباعة.</p>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      'use strict';
+      const STORAGE_KEY = 'newal-paperwork-pickup-draft-v1';
+      const formFields = ['pickupDate','pickupTime','documentNumber','dealerName','dealerPhone','dealerAddress','driverName','dealerSigner','driverSigner'];
+      const body = document.getElementById('itemsBody');
+      const $ = id => document.getElementById(id);
+      const itemKeys = ['paperwork','model','serial','quantity','notes'];
+      let itemId = 0;
+      let toastTimer;
+
+      function toast(message) {
+        const el = $('toast');
+        el.textContent = message;
+        el.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+      }
+      function dateTimeNow() {
+        const d = new Date();
+        const pad = n => String(n).padStart(2, '0');
+        return { date: `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`, time: `${pad(d.getHours())}:${pad(d.getMinutes())}` };
+      }
+      function safeNumber(n) {
+        const value = Number.parseInt(n, 10);
+        return Number.isFinite(value) && value > 0 ? Math.min(value, 99999) : 1;
+      }
+      function addItem(values = {}, focus = false) {
+        const tr = document.createElement('tr');
+        tr.dataset.rowId = String(++itemId);
+        tr.innerHTML = `
+          <td><span class="row-num"></span></td>
+          <td><div class="inputwrap"><input data-key="paperwork" type="text" placeholder="رقم الطلب" aria-label="رقم Paperwork"><div class="print-value"></div></div></td>
+          <td><div class="inputwrap"><input data-key="model" type="text" placeholder="مثال: WTD-038-05" aria-label="موديل الجهاز"><div class="print-value"></div></div></td>
+          <td><div class="inputwrap"><input data-key="serial" type="text" placeholder="اختياري" aria-label="الرقم التسلسلي"><div class="print-value"></div></div></td>
+          <td><div class="inputwrap"><input data-key="quantity" type="number" inputmode="numeric" min="1" step="1" max="99999" aria-label="الكمية"><div class="print-value"></div></div></td>
+          <td><div class="inputwrap"><input data-key="notes" type="text" placeholder="اختياري" aria-label="ملاحظات"><div class="print-value"></div></div></td>
+          <td><button type="button" class="del-row" aria-label="حذف هذا المنتج" title="حذف المنتج">×</button></td>`;
+        itemKeys.forEach(key => tr.querySelector(`[data-key="${key}"]`).value = key === 'quantity' ? safeNumber(values[key]) : String(values[key] ?? ''));
+        tr.querySelector('.del-row').addEventListener('click', () => {
+          if (body.children.length === 1) {
+            itemKeys.forEach(key => tr.querySelector(`[data-key="${key}"]`).value = key === 'quantity' ? '1' : '');
+          } else tr.remove();
+          updateRows();
+        });
+        tr.querySelector('[data-key="quantity"]').addEventListener('input', updateRows);
+        body.append(tr);
+        updateRows();
+        if (focus) tr.querySelector('[data-key="paperwork"]').focus();
+      }
+      function updateRows() {
+        [...body.children].forEach((row, idx) => row.querySelector('.row-num').textContent = String(idx + 1));
+        const n = body.children.length;
+        $('itemsCounter').textContent = n === 1 ? 'طلب واحد' : `${n} طلبات`;
+        const sum = [...body.children].reduce((acc, row) => acc + safeNumber(row.querySelector('[data-key="quantity"]').value), 0);
+        $('totalQuantity').textContent = `إجمالي الكمية: ${sum.toLocaleString('ar-IQ')}`;
+      }
+      function getItems() {
+        return [...body.children].map(row => Object.fromEntries(itemKeys.map(key => [key, row.querySelector(`[data-key="${key}"]`).value])));
+      }
+      function setItems(items) {
+        body.replaceChildren();
+        if (Array.isArray(items) && items.length) items.slice(0, 500).forEach(item => addItem(item && typeof item === 'object' ? item : {}));
+        else addItem();
+        updateRows();
+      }
+      function makeSignature(canvasId, padId, clearId) {
+        const canvas = $(canvasId), pad = $(padId);
+        let ctx, drawing = false, hasInk = false, last = null;
+        function getCoords(e) {
+          const rect = canvas.getBoundingClientRect();
+          return {x: e.clientX - rect.left, y: e.clientY - rect.top};
+        }
+        function setupCanvas() {
+          const prior = hasInk ? canvas.toDataURL('image/png') : null;
+          const bounds = canvas.getBoundingClientRect();
+          const scale = Math.min(window.devicePixelRatio || 1, 2);
+          canvas.width = Math.max(1, Math.floor(bounds.width * scale));
+          canvas.height = Math.max(1, Math.floor(bounds.height * scale));
+          ctx = canvas.getContext('2d');
+          ctx.setTransform(scale, 0, 0, scale, 0, 0);
+          ctx.lineWidth = 2.3;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.strokeStyle = '#172d45';
+          ctx.fillStyle = '#172d45';
+          if (prior) {
+            const img = new Image();
+            img.onload = () => ctx.drawImage(img, 0, 0, bounds.width, bounds.height);
+            img.src = prior;
+          }
+        }
+        function down(e) {
+          if (e.pointerType === 'mouse' && e.button !== 0) return;
+          e.preventDefault();
+          drawing = true;
+          try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
+          last = getCoords(e);
+          ctx.beginPath(); ctx.arc(last.x, last.y, 1.3, 0, Math.PI * 2); ctx.fill();
+          hasInk = true;
+          pad.classList.add('has-ink');
+        }
+        function move(e) {
+          if (!drawing) return;
+          e.preventDefault();
+          const next = getCoords(e);
+          ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(next.x, next.y); ctx.stroke();
+          last = next;
+        }
+        function up(e) { if (drawing) { drawing = false; last = null; try { canvas.releasePointerCapture(e.pointerId); } catch (_) {} } }
+        canvas.addEventListener('pointerdown', down);
+        canvas.addEventListener('pointermove', move);
+        canvas.addEventListener('pointerup', up);
+        canvas.addEventListener('pointercancel', up);
+        canvas.addEventListener('lostpointercapture', () => {drawing = false; last = null;});
+        $(clearId).addEventListener('click', clear);
+        function clear() { if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height); hasInk = false; pad.classList.remove('has-ink'); }
+        function setData(data) {
+          clear();
+          if (typeof data !== 'string' || !data.startsWith('data:image/png;base64,')) return;
+          const img = new Image();
+          img.onload = () => {
+            const r = canvas.getBoundingClientRect();
+            ctx.drawImage(img, 0, 0, r.width, r.height);
+            hasInk = true;
+            pad.classList.add('has-ink');
+          };
+          img.src = data;
+        }
+        function getData() { return hasInk ? canvas.toDataURL('image/png') : null; }
+        setupCanvas();
+        return { setupCanvas, clear, setData, getData };
+      }
+      const dealerSig = makeSignature('dealerCanvas','dealerPad','clearDealer');
+      const driverSig = makeSignature('driverCanvas','driverPad','clearDriver');
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => { dealerSig.setupCanvas(); driverSig.setupCanvas(); }, 170);
+      });
+
+      function saveDraft() {
+        try {
+          const data = {version: 1, fields: Object.fromEntries(formFields.map(id => [id, $(id).value])), items: getItems(), signatures: {dealer: dealerSig.getData(), driver: driverSig.getData()}};
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+          toast('تم حفظ المسودة على هذا الجهاز بنجاح.');
+        } catch (err) { toast('تعذر حفظ المسودة. تحقق من إعدادات التخزين أو مساحة المتصفح.'); }
+      }
+      function restoreDraft() {
+        let data;
+        try {
+          const text = localStorage.getItem(STORAGE_KEY);
+          if (!text) { toast('لا توجد مسودة محفوظة على هذا الجهاز.'); return; }
+          data = JSON.parse(text);
+          if (!data || data.version !== 1 || !data.fields || !Array.isArray(data.items)) throw new Error('Invalid draft');
+          formFields.forEach(id => $(id).value = String(data.fields[id] ?? ''));
+          setItems(data.items);
+          dealerSig.setData(data.signatures?.dealer);
+          driverSig.setData(data.signatures?.driver);
+          toast('تم استعادة المسودة المحفوظة.');
+        } catch (_) { toast('تعذر استعادة المسودة المحفوظة.'); }
+      }
+      function resetForm() {
+        if (!window.confirm('هل تريد مسح بيانات النموذج الحالي والتوقيعات؟ لن تُحذف المسودة المحفوظة إلا إذا اخترت حفظ النموذج الجديد.')) return;
+        formFields.forEach(id => $(id).value = '');
+        const now = dateTimeNow();
+        $('pickupDate').value = now.date;
+        $('pickupTime').value = now.time;
+        setItems([{}]);
+        dealerSig.clear();
+        driverSig.clear();
+        toast('أصبح النموذج جاهزاً لإدخال طلب جديد.');
+      }
+      function syncPrint() {
+        document.querySelectorAll('.inputwrap').forEach(wrapper => {
+          const input = wrapper.querySelector('input, textarea');
+          const output = wrapper.querySelector('.print-value');
+          if (input && output) output.textContent = input.value.trim() || ' ';
+        });
+        $('dealerSigPrint').src = dealerSig.getData() || '';
+        $('driverSigPrint').src = driverSig.getData() || '';
+      }
+      function printForm() {
+        syncPrint();
+        window.print();
+      }
+      $('addItem').addEventListener('click', () => addItem({}, true));
+      $('saveDraft').addEventListener('click', saveDraft);
+      $('saveBottom').addEventListener('click', saveDraft);
+      $('restoreDraft').addEventListener('click', restoreDraft);
+      $('resetForm').addEventListener('click', resetForm);
+      $('printTop').addEventListener('click', printForm);
+      $('printBottom').addEventListener('click', printForm);
+      window.addEventListener('beforeprint', syncPrint);
+      const now = dateTimeNow();
+      $('pickupDate').value = now.date;
+      $('pickupTime').value = now.time;
+      addItem();
+    })();
+  </script>
+</body>
+</html>
